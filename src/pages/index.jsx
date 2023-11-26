@@ -19,13 +19,14 @@ function Index(){
                   <ul>
                     <li>{state.username}</li>
                     <li>{state.displayName}</li>
+                    <li>{state.sub}</li>
                     <li>helo</li>
                   </ul>
     
                   <button onClick={() => signOut()}>Logout</button>
                 </div>
               )
-              : <button onClick={() => signIn()}>Login</button>
+              : <button onClick={() => signIn()}>Lets Get Started</button>
           }
         </div>
     );
