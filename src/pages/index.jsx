@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Header from "../components/Header";
 import { useAuthContext } from "@asgardeo/auth-react";
 
 function Index() {
@@ -7,6 +8,11 @@ function Index() {
 
     useEffect(() => {
         const fetchData = async () => {
+            // Check whether user is authenticated
+            if(!state.isAuthenticated){
+                return;
+            }
+
             try {
                 const response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
                     headers: {
@@ -29,6 +35,8 @@ function Index() {
     }, [getAccessToken]);
 
     return (
+        <>
+        <Header secured={false} />
         <div className="App">
             {state.isAuthenticated ? (
                 <div>
@@ -51,6 +59,7 @@ function Index() {
                 <button onClick={() => signIn()}>Let's Get Started</button>
             )}
         </div>
+    </>
     );
 }
 
