@@ -6,33 +6,6 @@ function Index() {
     const { state, signOut, getAccessToken, signIn } = useAuthContext();
     const [userInfo, setUserInfo] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            // Check whether user is authenticated
-            if(!state.isAuthenticated){
-                return;
-            }
-
-            try {
-                const response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
-                    headers: {
-                        Authorization: `Bearer ${await getAccessToken()}`
-                    }
-                });
-
-                if (response.ok) {
-                    const json = await response.json();
-                    setUserInfo(json);
-                } else {
-                    console.error('Error:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        };
-        fetchData();
-        console.log("user info", userInfo);
-    }, [getAccessToken]);
 
     return (
         <>

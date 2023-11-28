@@ -33,7 +33,7 @@ function Header({ secured, role }){
 
     async function handleAuthorization(secured, role){
         // Rendering page is secured page
-        if(state.isAuthenticated === true){
+        if(state.isAuthenticated === true && secured === true){
             // Entered page is properly authenticated
             // Next step is to check the role
 
@@ -75,9 +75,11 @@ function Header({ secured, role }){
                 console.error('Error:', error);
                 signIn();
             }
-        } else {
+        } else if(state.isAuthenticated === false && secured === true) {
             // Redirect to authentication process
             signIn();
+        } else if(secured === false){
+            return true;
         }
     }
 
