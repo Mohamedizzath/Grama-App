@@ -1,8 +1,13 @@
 import React from "react";
+import Header from "../components/Header";
 
 function Home (){
     return(
-        <h1>home page for all</h1>
+        <div>
+            <Header secured={false} />
+            <h1>home page for all</h1>
+        </div>
+
     );
 }
 

@@ -46,7 +46,7 @@ function RefreshScreen() {
   return (
     <>
       {loading ? (
-            <Box sx={{ height: '88vh', display: 'flex', justifyContent: 'center', flexGrow: 1 }}>
+            <Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', flexGrow: 1 }}>
             <Grid container spacing={2} columns={16} style={{ margin: 0, alignItems: 'center' }} sx={{ flexGrow: 1 }}>
                 <Grid xs={4}></Grid>
                 <Grid xs={8} style={{ backgroundColor: 'rgba(255, 118, 27, 0.9)', padding: '20px', borderRadius: '8px', textAlign: 'center'}}>
