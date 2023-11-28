@@ -19,7 +19,6 @@ function Header({ secured, role }){
             if(state.isAuthenticated === true){
                 // Entered page is properly authenticated
                 // Next step is to check the role
-                // TODO: change to cookies
 
                 try {
                     const response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
@@ -27,7 +26,7 @@ function Header({ secured, role }){
                             Authorization: `Bearer ${await getAccessToken()}`
                         }
                     });
-    
+                    
                     if (response.ok) {
                         const json = await response.json();
                         const fetchedRole = json.application_roles;
@@ -35,9 +34,11 @@ function Header({ secured, role }){
                         // Checking the role
                         if(!fetchedRole && role === "CITIZEN"){
                             setUserRole("CITIZEN");
+                            localStorage.setItem('User-Role', 'CITIZEN')
                             return true;
                         } else if(fetchedRole === "gramaSewaka" && role === "GRAMA-SEWAKA"){
                             setUserRole("GRAMA-SEWAKA");
+                            localStorage.setItem('User-Role', 'CITIZEN')
                             return true;
                         } else {
                             // Invalid permission - redirect to logout 
