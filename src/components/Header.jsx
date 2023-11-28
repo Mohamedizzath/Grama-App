@@ -213,18 +213,6 @@ function Header({ secured, role }){
         
       </Box>
     </Sheet>
-    
-        <Container >
-            {
-                !state.isAuthenticated && <Button color="primary" onClick={() => signIn()} size="md" variant="soft">Sign in</Button>
-            }
-            {
-                state.isAuthenticated && <Chip color="primary">{userRole}</Chip>
-            }
-            {
-                state.isAuthenticated && <Button color="neutral" m onClick={() => signOut()} size="md" variant="soft">Sign out</Button>
-            }
-        </Container>
     </>);
 }
 
