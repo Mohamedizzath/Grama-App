@@ -25,11 +25,10 @@ function Header({ secured, role }){
     const { state, signOut, signIn, getAccessToken } = useAuthContext();
     const [ userRole, setUserRole ] = useState(undefined);
     const [open, setOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Adding router navigation
     const navigate = useNavigate();
-
-    useEffect(() => console.log(userRole), [userRole]);
 
     async function handleAuthorization(secured, role){
         // Rendering page is secured page
@@ -56,17 +55,7 @@ function Header({ secured, role }){
                         localStorage.setItem('User-Role', 'GRAMA-SEWAKA');
                     }
 
-                    // Checking the role
-                    if(secured){
-                        if(role === userRole){
-                            return true;
-                        } else {
-                            // Invalid permission - redirect to logout 
-                            setOpen(true);
-                        }
-                    } else {
-                        return true;
-                    }
+                    setIsLoading(false);
                 } else {
                     console.error('Error:', response.statusText);
                     signIn();
@@ -86,6 +75,21 @@ function Header({ secured, role }){
     useEffect(() => {
         handleAuthorization(secured, role);
     }, []);
+
+    useEffect(() => {
+        validateUserRole(isLoading, secured, role, userRole);
+    }, [userRole]);
+
+    function validateUserRole(isLoading, secured, pageRole, currentRole){
+        console.log(role + " === " + userRole);
+        if(secured && !isLoading && pageRole !== currentRole){
+            // Invalid permission - redirect to logout 
+            setOpen(true);
+        } else {
+            setOpen(false);
+            return true;
+        }
+    }
 
     return (<>
         <Modal open={open} onClose={() => setOpen(false)}>
