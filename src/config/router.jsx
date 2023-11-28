@@ -1,9 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import Index from "../pages";
-import Login from "../pages/login";
-import Dashboard from "../pages/dashboard";
 import CitizenIndex from "../pages/citizen";
 import GramaSewakaIndex from "../pages/gramaSewaka";
+import RefreshScreen from "../pages/refresh";
 
 const router = createBrowserRouter([
     {
@@ -11,8 +10,8 @@ const router = createBrowserRouter([
         element: <Index />
     },
     {
-        path: "/login",
-        element: <Login />
+        path: "/refresh",
+        element: <RefreshScreen />
     },
     {
         path: "/citizen",
