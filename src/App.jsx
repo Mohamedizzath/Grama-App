@@ -13,6 +13,8 @@ import Index from './pages';
 import Login from './pages/login';
 import CitizenIndex from './pages/citizen';
 import GramaSewakaIndex from './pages/gramaSewaka';
+import { CssVarsProvider } from '@mui/joy';
+import theme from './theme';
 
 
 function App() {
@@ -20,7 +22,9 @@ function App() {
   return (
     <>
       <AuthProvider config={ config }>
-        <RouterProvider router={router} />
+        <CssVarsProvider theme={theme}>
+          <RouterProvider router={router} />
+        </CssVarsProvider>
       </AuthProvider>
     </>
   )
