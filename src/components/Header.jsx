@@ -24,8 +24,18 @@ function Header({ secured, role }){
     // Authentication logic
     const { state, signOut, signIn, getAccessToken } = useAuthContext();
     const [ userRole, setUserRole ] = useState(undefined);
-    const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
+    // Handling Error messages
+    // Error obj documentation - title, body, mainBtn: { mainBtnText, mainBtnAction }, secondBtn:{ secondBtnText, secondBtnAction} 
+    const defaultErrObj = {
+        title: null,
+        body: null,
+        mainBtn: { mainBtnText: null, mainBtnAction: null },
+        secondBtn: { secondBtnText: null, secondBtnAction: null }
+    };
+    const [errorObj, setErrorObj] = useState(defaultErrObj);
+    const [showError, setShowError] = useState(true);
 
     // Adding router navigation
     const navigate = useNavigate();
@@ -35,6 +45,13 @@ function Header({ secured, role }){
         if(state.isAuthenticated === true && secured === true){
             // Entered page is properly authenticated
             // Next step is to check the role
+
+            const sessionRole = sessionStorage.getItem('User-Role');
+
+            if(sessionRole === role){
+                console.log("DEBUG: Fetched from session!");
+                setUserRole(sessionRole);
+            }
 
             try {
                 const response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
@@ -49,20 +66,41 @@ function Header({ secured, role }){
 
                     if(!fetchedRole){
                         setUserRole("CITIZEN");
-                        localStorage.setItem('User-Role', 'CITIZEN');
+                        sessionStorage.setItem('User-Role', 'CITIZEN');
                     } else if(fetchedRole === "gramaSewaka") {
                         setUserRole("GRAMA-SEWAKA");
-                        localStorage.setItem('User-Role', 'GRAMA-SEWAKA');
+                        sessionStorage.setItem('User-Role', 'GRAMA-SEWAKA');
                     }
 
                     setIsLoading(false);
+                } else if(response.status === 401) {
+                    const errObj = {
+                        title: "Oops, Unauthorized!",
+                        body: "Look like you'r authentication session expired. Please sign out and sign in again.",
+                        mainBtn: { mainBtnText: "Sign out", mainBtnAction: () => signOut() },
+                        secondBtn: { secondBtnText: "Go to Home", secondBtnAction: () => navigate("/") }
+                    }
+                    setErrorObj(errObj);
+                    setShowError(true);
                 } else {
-                    console.error('Error:', response.statusText);
-                    signIn();
+                    const errObj = {
+                        title: "Oops, Internal server error!",
+                        body: "Look like internal server having some issue. Please try again later.",
+                        mainBtn: { mainBtnText: "Go to Home", mainBtnAction: () => navigate("/") },
+                        secondBtn: { secondBtnText: "Cancel", secondBtnAction: () => showError(false) }
+                    }
+                    setErrorObj(errObj);
+                    setShowError(true); 
                 }
             } catch (error) {
-                console.error('Error:', error);
-                signIn();
+                const errObj = {
+                    title: "Oops, Internal server error!",
+                    body: "Look like internal server having some issue. Please try again later.",
+                    mainBtn: { mainBtnText: "Go to Home", mainBtnAction: () => navigate("/") },
+                    secondBtn: { secondBtnText: "Cancel", secondBtnAction: () => showError(false) }
+                }
+                setErrorObj(errObj);
+                setShowError(true); 
             }
         } else if(state.isAuthenticated === false && secured === true) {
             // Redirect to authentication process
@@ -81,18 +119,24 @@ function Header({ secured, role }){
     }, [userRole]);
 
     function validateUserRole(isLoading, secured, pageRole, currentRole){
-        console.log(role + " === " + userRole);
         if(secured && !isLoading && pageRole !== currentRole){
             // Invalid permission - redirect to logout 
-            setOpen(true);
+            const errObj = {
+                title: "Oops, Authorization failed!",
+                body: "Look like you don't have proper access to view this page. Please try to use different account.",
+                mainBtn: { mainBtnText: "Sign out", mainBtnAction: () => signOut() },
+                secondBtn: { secondBtnText: "Go to Home", secondBtnAction: () => navigate("/") }
+            }
+            setErrorObj(errObj);
+            setShowError(true);
         } else {
-            setOpen(false);
+            setShowError(false);
             return true;
         }
     }
 
     return (<>
-        <Modal open={open} onClose={() => setOpen(false)}>
+        <Modal open={showError}>
         <ModalDialog
             aria-labelledby="nested-modal-title"
             aria-describedby="nested-modal-description"
@@ -109,11 +153,10 @@ function Header({ secured, role }){
             })}
         >
             <Typography id="nested-modal-title" level="h2">
-            Are you absolutely sure?
+             { errorObj.title ? errorObj.title : "" }
             </Typography>
             <Typography id="nested-modal-description" textColor="text.tertiary">
-            This action cannot be undone. This will permanently delete your account
-            and remove your data from our servers.
+            { errorObj.body ? errorObj.body : "" }
             </Typography>
             <Box
             sx={{
@@ -123,15 +166,15 @@ function Header({ secured, role }){
                 flexDirection: { xs: 'column', sm: 'row-reverse' },
             }}
             >
-            <Button variant="solid" color="primary" onClick={() => setOpen(false)}>
-                Continue
+            <Button variant="solid" color="main" onClick={errorObj.mainBtn.mainBtnAction}>
+                { errorObj.mainBtn.mainBtnText }
             </Button>
             <Button
-                variant="outlined"
-                color="neutral"
-                onClick={() => setOpen(false)}
+                variant="plain"
+                color="main"
+                onClick={errorObj.secondBtn.secondBtnAction}
             >
-                Cancel
+                {errorObj.secondBtn.secondBtnText}
             </Button>
             </Box>
         </ModalDialog>
