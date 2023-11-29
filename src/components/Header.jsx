@@ -76,7 +76,7 @@ function Header({ secured, role }){
                 } else if(response.status === 401) {
                     const errObj = {
                         title: "Oops, Unauthorized!",
-                        body: "Look like you'r authentication session expired. Please sign out and sign in again.",
+                        body: "Looks like your session expired. Please sign out and sign in again.",
                         mainBtn: { mainBtnText: "Sign out", mainBtnAction: () => signOut() },
                         secondBtn: { secondBtnText: "Go to Home", secondBtnAction: () => navigate("/") }
                     }
@@ -85,7 +85,7 @@ function Header({ secured, role }){
                 } else {
                     const errObj = {
                         title: "Oops, Internal server error!",
-                        body: "Look like internal server having some issue. Please try again later.",
+                        body: "Looks like internal server having some issue. Please try again later.",
                         mainBtn: { mainBtnText: "Go to Home", mainBtnAction: () => navigate("/") },
                         secondBtn: { secondBtnText: "Cancel", secondBtnAction: () => showError(false) }
                     }
@@ -95,7 +95,7 @@ function Header({ secured, role }){
             } catch (error) {
                 const errObj = {
                     title: "Oops, Internal server error!",
-                    body: "Look like internal server having some issue. Please try again later.",
+                    body: "Looks like internal server having some issue. Please try again later.",
                     mainBtn: { mainBtnText: "Go to Home", mainBtnAction: () => navigate("/") },
                     secondBtn: { secondBtnText: "Cancel", secondBtnAction: () => showError(false) }
                 }
@@ -123,7 +123,7 @@ function Header({ secured, role }){
             // Invalid permission - redirect to logout 
             const errObj = {
                 title: "Oops, Authorization failed!",
-                body: "Look like you don't have proper access to view this page. Please try to use different account.",
+                body: "Looks like you don't have proper access to view this page. Please try to use different account.",
                 mainBtn: { mainBtnText: "Sign out", mainBtnAction: () => signOut() },
                 secondBtn: { secondBtnText: "Go to Home", secondBtnAction: () => navigate("/") }
             }

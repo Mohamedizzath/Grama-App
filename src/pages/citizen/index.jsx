@@ -21,7 +21,7 @@ function CitizenIndex(){
             <Box display="flex" flexDirection="row">
                 <Sidebar currentPage={currentPage} changePage={setCurrentPage} />
                 <Divider orientation="vertical" color="main"/>
-                <Box sx={{ paddingTop: "18px", paddingLeft: "16px"}}>
+                <Box sx={{ paddingTop: "18px", paddingLeft: "16px", paddingRight: "16px", width: "80%"}}>
                     { 
                         currentPage === "IDENTITY-REQ" && <IdentityPage />
                     }
