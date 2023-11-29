@@ -3,7 +3,7 @@ const config = {
     signOutRedirectURL: "http://localhost:5173/",
     clientID: "fzo2NWtoZMhrklIDf95yz9TjkqQa",
     baseUrl: "https://api.asgardeo.io/t/wso2khadijah",
-    scope: [ "openid","profile", "app_roles", "phone"],
+    scope: [ "openid","profile", "app_roles", "email","phone"],
     "storage": "sessionStorage"
 };
 
