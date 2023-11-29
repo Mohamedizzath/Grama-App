@@ -9,7 +9,7 @@ import { AuthProvider, SecureRoute } from "@asgardeo/auth-react";
 import config from './config/asgardeo-config';
 import router from './config/router';
 import { BrowserRouter, Router, Routes, Route } from "react-router-dom";
-import { CssVarsProvider } from '@mui/joy';
+import { CssVarsProvider, ThemeProvider } from '@mui/joy';
 import theme from './theme';
 
 function App() {
