@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Typography } from '@mui/material';
 import { RouterProvider } from 'react-router-dom';
 import { AuthProvider, SecureRoute } from "@asgardeo/auth-react";
 import router from './config/router';
@@ -25,8 +23,8 @@ function App() {
 }
 
 const config = {
-  signInRedirectURL: `https://f0f85940-267a-4c31-b011-c56edd21bdea.e1-us-east-azure.choreoapps.dev`,
-  signOutRedirectURL: `https://f0f85940-267a-4c31-b011-c56edd21bdea.e1-us-east-azure.choreoapps.dev`,
+  signInRedirectURL: `https://58ad342e-1774-4eda-93b8-900296960674.e1-us-east-azure.choreoapps.dev`, // Change when deploying
+  signOutRedirectURL: `https://58ad342e-1774-4eda-93b8-900296960674.e1-us-east-azure.choreoapps.dev`,
   clientID: `fzo2NWtoZMhrklIDf95yz9TjkqQa`,
   baseUrl: `https://api.asgardeo.io/t/wso2khadijah`,
   scope: [ "openid","profile", "app_roles", "email","phone"],

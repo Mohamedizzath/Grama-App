@@ -1,8 +1,11 @@
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 
 function AddressPage(){
+
     return (<>
-        <Typography>Address Requests</Typography>
+        <Box>
+            
+        </Box>
     </>);
 }
 
