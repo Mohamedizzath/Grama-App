@@ -41,7 +41,7 @@ function Home() {
                 </Typography>
 
                 <div style={{ marginTop: '20px' }}>
-                    <Button variant="filled" style={{ backgroundColor: 'red', color: 'white', padding:'10px', borderRadius:'5px', width:'50%' }} 
+                    <Button variant="solid" color="main" style={{padding:'10px', borderRadius:'5px', width:'50%' }} 
                     onClick={() => signIn()}>Log In
                     </Button>
                 </div>

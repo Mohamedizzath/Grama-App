@@ -33,7 +33,7 @@ function Index() {
                 <Grid xs={4}></Grid>
                 <Grid xs={8} style={{ backgroundColor: 'rgba(240,92,4)', padding: '20px', borderRadius: '8px', textAlign: 'center'}}>
                     <LinearProgress color="neutral" determinate={false} size="lg" variant="soft" />
-                    <h1 style={{ marginTop: '20px', fontFamily: 'Arial, sans-serif', fontSize: '14px', color:'white' }}>Loading...</h1>
+                    <h1 style={{ marginTop: '20px', fontFamily: 'Arial, sans-serif', fontSize: '18px', color:'white' }}>Loading...</h1>
                 </Grid>
                 <Grid xs={4}></Grid>
             </Grid>
