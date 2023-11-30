@@ -1,9 +1,15 @@
 import React from "react";
+import SubHeader from "./subHeader";
 
 function PolicePage(){
 
     return(
-        <div>police page</div>
+        <Box>
+            <SubHeader />
+            <Box paddingY={'1.5%'}>
+                identity
+            </Box>       
+        </Box>
     );
 }
 
