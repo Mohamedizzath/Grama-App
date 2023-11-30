@@ -1,9 +1,15 @@
 import React from "react";
+import SubHeader from "./subHeader";
 
 function AddressPage(){
 
     return(
-        <div>address page</div>
+        <Box>
+            <SubHeader />
+            <Box paddingY={'1.5%'}>
+                identity
+            </Box>       
+        </Box>
     );
 }
 
