@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import identityReqs from "../../test-data/identityRequest";
 import IdentityCard from "./IdentityPage/IdentityCard";
+import ViewIdentityModal from "./IdentityPage/ViewIdentityModal";
 
 function IdentityPage(){
     const { state } = useAuthContext();
@@ -45,19 +46,31 @@ function IdentityPage(){
 
         setViewReq(tempReq);
         console.log(tempReq);
-    }, [viewStatus])
+    }, [viewStatus]);
+
+    // View individual request
+    const [ showReq, setShowReq ] = useState(false);
+    const [ showingDetail, setShowingDetail ] = useState(null);
+
+    // Handle individual showing component
+    function showDetailRequest(details){
+        setShowingDetail(details);
+        setShowReq(true);
+
+        console.log(details);
+    }
 
     return (<>
         <Box>
             {/* Identity request create modal */}
             <Modal open={postModal} onClose={() => setPostModal(false)}>
                 <ModalDialog sx={{ padding: "0px", overflow: "hidden" }}>
-                    <Box sx={{ height: "10px",
+                    <Box sx={{ height: "15px",
                     background: (theme) =>
                     `linear-gradient(to top, ${theme.vars.palette["main"][800]}, ${theme.vars.palette["main"][500]})`,    
                     }}></Box>
                     <Box sx={{ padding: "16px"}}>
-                        <Typography level="h3">Create new Identity request!</Typography>
+                        <Typography level="h2">Create new Identity request!</Typography>
                         <Grid container spacing={2} sx={{ flexGrow: 1, marginTop: "16px" }}>
                             <Grid xs={12} md={6}>
                                 <FormControl>
@@ -127,6 +140,10 @@ function IdentityPage(){
                     </Box>
                 </ModalDialog>
             </Modal>
+            {/* Individual request showing modal */}
+            {
+                showReq && <ViewIdentityModal viewOpen={showReq} setViewOpen={setShowReq} details={showingDetail} />
+            }
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography level="h2">Hii! {state.displayName}</Typography>
                 <Button color="main" size="sm" variant="solid" startDecorator={<AddIcon />} onClick={() => setPostModal(true)}>New Request</Button> 
@@ -136,7 +153,7 @@ function IdentityPage(){
             <Divider />
             <Box display="flex" justifyContent="space-between" alignItems="flex-end" sx={{ marginTop: "18px", marginBottom: "8px" }}>
                 <Typography level="h2">Identity Requests</Typography>
-                <Select size="sm" defaultValue={viewStatus} onChange={(event,value) => setViewStatus(value)}>
+                <Select size="sm" defaultValue={viewStatus} onChange={(event,value) => setViewStatus(value)} sx={{ width: "180px"}}>
                     <Option key="ALL" value="ALL">All requests</Option>
                     <Option key="PENDING" value="PENDING">Pending requests</Option>
                     <Option key="VERIFIED" value="VERIFIED">Confirmed requests</Option>
@@ -147,7 +164,7 @@ function IdentityPage(){
                 flexWrap: "wrap",
                 }}>
                 {
-                    viewReqs.map((req, index) => <IdentityCard index={index} details={req} />)
+                    viewReqs.map((req, index) => <IdentityCard index={index} details={req} showDetails={showDetailRequest}/>)
                 }
             </Box>
         </Box>

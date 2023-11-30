@@ -8,7 +8,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
         contact number, email, address, dob, grama-division
 */
 
-function IdentityCard({ index, details }){
+function IdentityCard({ index, details, showDetails }){
     const status = details["status"];
     let color = status === "PENDING" ? "primary" : (status === "VERIFIED" ? "success" : "danger" )
 
@@ -30,7 +30,7 @@ function IdentityCard({ index, details }){
                 {
                     status === "PENDING" && <Button color={color} variant="soft" size="sm" sx={{ marginRight: "4px" }} startDecorator={<ClearIcon />}>Delete</Button>
                 }
-                <Button color={color} variant="solid" size="sm" endDecorator={<ArrowForwardIcon/>}>View Details</Button>
+                <Button color={color} variant="solid" size="sm" endDecorator={<ArrowForwardIcon/>} onClick={() => showDetails(details)}>View Details</Button>
             </Box>
         </Card>
     </>;
