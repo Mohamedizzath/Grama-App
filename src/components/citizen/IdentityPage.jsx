@@ -1,10 +1,12 @@
 import { useAuthContext } from "@asgardeo/auth-react";
-import { Box, Button, Chip, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Option, Select } from "@mui/joy";
+import { Box, Button, Chip, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Option, Select, Divider } from "@mui/joy";
 import { Typography } from "@mui/joy";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
+import identityReqs from "../../test-data/identityRequest";
+import IdentityCard from "./IdentityPage/IdentityCard";
 
 function IdentityPage(){
     const { state } = useAuthContext();
@@ -20,6 +22,30 @@ function IdentityPage(){
 
     // Managing the state for the modal
     const [postModal, setPostModal] = useState(false);
+
+    // Handle get identity requests
+    const [idReqs, setIdReqs] = useState(identityReqs);
+    const [viewReqs, setViewReq] = useState(identityReqs);
+
+    // Managing view status of cards
+    const [ viewStatus, setViewStatus ] = useState("ALL");
+
+    // Managing req cards
+    useEffect(() => {
+        let tempReq = [];
+        if(viewStatus === "PENDING"){
+            tempReq = idReqs.filter(req => req["status"] === "PENDING");
+        } else if(viewStatus === "VERIFIED"){
+            tempReq = idReqs.filter(req => req["status"] === "VERIFIED");
+        } else if(viewStatus === "REJECTED"){
+            tempReq = idReqs.filter(req => req["status"] === "REJECTED");
+        } else {
+            tempReq = idReqs;
+        }
+
+        setViewReq(tempReq);
+        console.log(tempReq);
+    }, [viewStatus])
 
     return (<>
         <Box>
@@ -102,10 +128,28 @@ function IdentityPage(){
                 </ModalDialog>
             </Modal>
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Typography level="h2" color="main">Hii! {state.displayName}</Typography>
+                <Typography level="h2">Hii! {state.displayName}</Typography>
                 <Button color="main" size="sm" variant="solid" startDecorator={<AddIcon />} onClick={() => setPostModal(true)}>New Request</Button> 
             </Box>
-            <Chip color="primary" size="sm" variant="soft" sx={{ marginTop: "4px" }}>Email - {state.email}</Chip>
+            <Chip color="primary" size="sm" variant="soft" sx={{ marginTop: "4px", marginBottom: "12px" }}>Email - {state.email}</Chip>
+            {/* Recent Identity requests */}
+            <Divider />
+            <Box display="flex" justifyContent="space-between" alignItems="flex-end" sx={{ marginTop: "18px", marginBottom: "8px" }}>
+                <Typography level="h2">Identity Requests</Typography>
+                <Select size="sm" defaultValue={viewStatus} onChange={(event,value) => setViewStatus(value)}>
+                    <Option key="ALL" value="ALL">All requests</Option>
+                    <Option key="PENDING" value="PENDING">Pending requests</Option>
+                    <Option key="VERIFIED" value="VERIFIED">Confirmed requests</Option>
+                    <Option key="REJECTED" value="REJECTED">Rejected requests</Option>
+                </Select>
+            </Box>
+            <Box display="flex" justifyContent="flex-start" alignItems="center" sx={{ 
+                flexWrap: "wrap",
+                }}>
+                {
+                    viewReqs.map((req, index) => <IdentityCard index={index} details={req} />)
+                }
+            </Box>
         </Box>
     </>);
 }
