@@ -1,5 +1,6 @@
 import React from "react";
 import SubHeader from "./subHeader";
+import {Box} from "@mui/joy";
 
 function PolicePage(){
 
