@@ -1,6 +1,7 @@
 import React from "react";
 import SubHeader from "./subHeader";
-import { Box, Typography, Table, TableHead, TableBody, TableRow, TableCell, Select, Option } from "@mui/joy";
+import { Box, Typography, Select, Option } from "@mui/joy";
+import { Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material";
 import identityReqs from "../../test-data/identityRequest";
 import { useState, useEffect } from "react";
 
