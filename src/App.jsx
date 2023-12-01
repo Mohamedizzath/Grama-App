@@ -23,12 +23,10 @@ function App() {
 }
 
 const config = {
-  // signInRedirectURL: `https://58ad342e-1774-4eda-93b8-900296960674.e1-us-east-azure.choreoapps.dev`, // Change when deploying
-  // signOutRedirectURL: `https://58ad342e-1774-4eda-93b8-900296960674.e1-us-east-azure.choreoapps.dev`,
-  signInRedirectURL: 'http://localhost:5173/',
-  signOutRedirectURL: 'http://localhost:5173/',
-  clientID: `fzo2NWtoZMhrklIDf95yz9TjkqQa`,
-  baseUrl: `https://api.asgardeo.io/t/wso2khadijah`,
+  signInRedirectURL: "http://localhost:5173/",
+  signOutRedirectURL: "http://localhost:5173/",
+  clientID: "fzo2NWtoZMhrklIDf95yz9TjkqQa",
+  baseUrl: "https://api.asgardeo.io/t/wso2khadijah",
   scope: [ "openid","profile", "app_roles", "email","phone"],
   "storage": "sessionStorage"
 };
