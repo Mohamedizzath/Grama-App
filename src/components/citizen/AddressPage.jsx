@@ -1,4 +1,4 @@
-import { Typography, Box, Button, Chip, Divider, Select, Option, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, } from "@mui/joy";
+import { Typography, Box, Button, Chip, Divider, Card, CardCover, Select, Option, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, } from "@mui/joy";
 import { useAuthContext } from "@asgardeo/auth-react";
 import AddIcon from '@mui/icons-material/Add';
 import { useState, useEffect } from "react";
@@ -7,6 +7,7 @@ import AddressCard from "./AddressPage/AddressCard";
 import ViewAddressModal from "./AddressPage/ViewAddressModal";
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
+import emptyRequestImg from "../../assets/empty-requests.svg";
 
 function AddressPage(){
     const { state } = useAuthContext();
@@ -23,7 +24,7 @@ function AddressPage(){
     const [ viewStatus, setViewStatus ] = useState("ALL");
 
     const [ addressReqs, setAddressReqs ] = useState(addressRequests);
-    const [ viewaddressReqs, setViewAddressReqs ] = useState(addressReqs);
+    const [ viewaddressReqs, setViewAddressReqs ] = useState(addressRequests);
     
     // Managing req cards
     useEffect(() => {
@@ -115,9 +116,24 @@ function AddressPage(){
                     flexWrap: "wrap",
                 }}>
                 {
-                    viewaddressReqs.map((req, index) => <AddressCard index={index} details={req} showDetails={showDetailRequest}/>)
+                    viewaddressReqs.length > 0 && viewaddressReqs.map((req, index) => <AddressCard index={index} details={req} showDetails={showDetailRequest}/>)
                 }
                 {/* Add empty reqs array placeholder */}
+                {
+                    viewaddressReqs.length < 1 && (
+                        <Box display="flex" flexDirection="column" alignItems="center" sx={{ marginTop: "24px", width: "100%"}}>
+                            <Card component="li" sx={{ width: 100, height: 100, border: 0 }}>
+                                <CardCover>
+                                <img
+                                    src={emptyRequestImg}
+                                    style={{ objectFit: "fill"}}
+                                />
+                                </CardCover>
+                            </Card>
+                            <Typography level="body-sm">New requests will be shown here!</Typography>
+                        </Box>
+                    )
+                }
             </Box>
         </Box>
     </>);

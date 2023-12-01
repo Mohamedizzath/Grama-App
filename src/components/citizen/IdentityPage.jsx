@@ -1,5 +1,5 @@
 import { useAuthContext } from "@asgardeo/auth-react";
-import { Box, Button, Chip, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Option, Select, Divider } from "@mui/joy";
+import { Box, Button, Chip, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Option, Select, Divider, Card, CardCover } from "@mui/joy";
 import { Typography } from "@mui/joy";
 import { useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
@@ -8,6 +8,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import identityReqs from "../../test-data/identityRequest";
 import IdentityCard from "./IdentityPage/IdentityCard";
 import ViewIdentityModal from "./IdentityPage/ViewIdentityModal";
+import emptyRequestImg from "../../assets/empty-requests.svg";
 
 function IdentityPage(){
     const { state } = useAuthContext();
@@ -161,7 +162,22 @@ function IdentityPage(){
                 flexWrap: "wrap",
                 }}>
                 {
-                    viewReqs.map((req, index) => <IdentityCard index={index} details={req} showDetails={showDetailRequest}/>)
+                    viewReqs.length > 0 && viewReqs.map((req, index) => <IdentityCard index={index} details={req} showDetails={showDetailRequest}/>)
+                }
+                {
+                    viewReqs.length < 1 && (
+                        <Box display="flex" flexDirection="column" alignItems="center" sx={{ marginTop: "24px", width: "100%"}}>
+                            <Card component="li" sx={{ width: 100, height: 100, border: 0 }}>
+                                <CardCover>
+                                <img
+                                    src={emptyRequestImg}
+                                    style={{ objectFit: "fill"}}
+                                />
+                                </CardCover>
+                            </Card>
+                            <Typography level="body-sm">New requests will be shown here!</Typography>
+                        </Box>
+                    )
                 }
             </Box>
         </Box>
