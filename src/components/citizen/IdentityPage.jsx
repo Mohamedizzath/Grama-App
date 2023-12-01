@@ -45,7 +45,6 @@ function IdentityPage(){
         }
 
         setViewReq(tempReq);
-        console.log(tempReq);
     }, [viewStatus]);
 
     // View individual request
@@ -56,8 +55,6 @@ function IdentityPage(){
     function showDetailRequest(details){
         setShowingDetail(details);
         setShowReq(true);
-
-        console.log(details);
     }
 
     return (<>
@@ -146,7 +143,7 @@ function IdentityPage(){
             }
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography level="h2">Hii! {state.displayName}</Typography>
-                <Button color="main" size="sm" variant="solid" startDecorator={<AddIcon />} onClick={() => setPostModal(true)}>New Request</Button> 
+                <Button color="main" size="sm" variant="solid" startDecorator={<AddIcon />} onClick={() => setPostModal(true)}>New Identity Request</Button> 
             </Box>
             <Chip color="primary" size="sm" variant="soft" sx={{ marginTop: "4px", marginBottom: "12px" }}>Email - {state.email}</Chip>
             {/* Recent Identity requests */}

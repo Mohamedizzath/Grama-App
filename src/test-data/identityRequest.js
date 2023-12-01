@@ -31,7 +31,8 @@ const identityReqs = [
         "status": "VERIFIED",
         "approved-by": {
             "id": 10010,
-            "name": "P. Chanaka Fernando"
+            "name": "P. Chanaka Fernando",
+            "approved-date": "2023-11-20"
         }
     },
     { 
@@ -50,7 +51,8 @@ const identityReqs = [
         "status": "REJECTED",
         "approved-by": {
             "id": 10009,
-            "name": "T. Kasun Hewage"
+            "name": "T. Kasun Hewage",
+            "approved-date": "2023-10-20"
         }
     },
     { 
