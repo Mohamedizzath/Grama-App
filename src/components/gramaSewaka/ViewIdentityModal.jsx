@@ -110,10 +110,16 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                                     <Grid xs={12} md={6}>
                                         <FormControl>
                                             <FormLabel>Status</FormLabel>
-                                            <Select defaultValue={selectedStatus} onChange={handleStatusChange}>
-                                                <Option value="VERIFIED">Verified</Option>
-                                                <Option value="REJECTED">Rejected</Option>
-                                                <Option value="PENDING">Pending</Option>
+                                            <Select defaultValue={selectedStatus} onChange={handleStatusChange} sx={{ backgroundColor: 'lightgray' }}>
+                                            <Option value="PENDING" sx={{ color: 'gray', pointerEvents: 'none' }}>
+                                                Pending
+                                            </Option>
+                                                <Option value="VERIFIED" sx={{ color: 'green' }}>
+                                                    Verify
+                                                </Option>
+                                                <Option value="REJECTED" sx={{ color: 'red' }}>
+                                                    Reject
+                                                </Option>
                                             </Select>
                                         </FormControl>
                                     </Grid>
