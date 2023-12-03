@@ -1,5 +1,5 @@
 import { useAuthContext } from "@asgardeo/auth-react";
-import { Box, Button, Chip, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Option, Select, Divider } from "@mui/joy";
+import { Box, Button, Chip, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Option, Select, Divider, Card, CardCover } from "@mui/joy";
 import { Typography } from "@mui/joy";
 import { useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
@@ -8,6 +8,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import identityReqs from "../../test-data/identityRequest";
 import IdentityCard from "./IdentityPage/IdentityCard";
 import ViewIdentityModal from "./IdentityPage/ViewIdentityModal";
+import emptyRequestImg from "../../assets/empty-requests.svg";
 
 function IdentityPage(){
     const { state } = useAuthContext();
@@ -45,7 +46,6 @@ function IdentityPage(){
         }
 
         setViewReq(tempReq);
-        console.log(tempReq);
     }, [viewStatus]);
 
     // View individual request
@@ -56,8 +56,6 @@ function IdentityPage(){
     function showDetailRequest(details){
         setShowingDetail(details);
         setShowReq(true);
-
-        console.log(details);
     }
 
     return (<>
@@ -146,7 +144,7 @@ function IdentityPage(){
             }
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography level="h2">Hii! {state.displayName}</Typography>
-                <Button color="main" size="sm" variant="solid" startDecorator={<AddIcon />} onClick={() => setPostModal(true)}>New Request</Button> 
+                <Button color="main" size="sm" variant="solid" startDecorator={<AddIcon />} onClick={() => setPostModal(true)}>New Identity Request</Button> 
             </Box>
             <Chip color="primary" size="sm" variant="soft" sx={{ marginTop: "4px", marginBottom: "12px" }}>Email - {state.email}</Chip>
             {/* Recent Identity requests */}
@@ -164,7 +162,22 @@ function IdentityPage(){
                 flexWrap: "wrap",
                 }}>
                 {
-                    viewReqs.map((req, index) => <IdentityCard index={index} details={req} showDetails={showDetailRequest}/>)
+                    viewReqs.length > 0 && viewReqs.map((req, index) => <IdentityCard index={index} details={req} showDetails={showDetailRequest}/>)
+                }
+                {
+                    viewReqs.length < 1 && (
+                        <Box display="flex" flexDirection="column" alignItems="center" sx={{ marginTop: "24px", width: "100%"}}>
+                            <Card component="li" sx={{ width: 100, height: 100, border: 0 }}>
+                                <CardCover>
+                                <img
+                                    src={emptyRequestImg}
+                                    style={{ objectFit: "fill"}}
+                                />
+                                </CardCover>
+                            </Card>
+                            <Typography level="body-sm">New requests will be shown here!</Typography>
+                        </Box>
+                    )
                 }
             </Box>
         </Box>

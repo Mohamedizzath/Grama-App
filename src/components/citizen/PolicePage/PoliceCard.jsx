@@ -1,15 +1,14 @@
 import { Card, Typography, Chip, Box, Button } from "@mui/joy";
 import ClearIcon from '@mui/icons-material/Clear';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 /*
     Identity card - getting at glance details of identities
     Data which needs to be fetched from backend
-        requestId, full-name, full-name-initials, nic, gender
-        contact number, email, address, dob, grama-division
+        requestId, reason, nic, grama-division
 */
 
-function IdentityCard({ index, details, showDetails }){
+function PoliceCard({ index, details, showDetails }){
     const status = details["status"];
     let color = status === "PENDING" ? "primary" : (status === "VERIFIED" ? "success" : "danger" )
 
@@ -22,10 +21,10 @@ function IdentityCard({ index, details, showDetails }){
             }}>
             <Box>
                 <Box display="flex" alignItems="center" justifyContent="start">
-                    <AccountCircleIcon fontSize="sm" color="neutral"/>
+                    <LocalPoliceIcon fontSize="sm" color="neutral"/>
                     &nbsp;
                     <Typography level="body-sm" alignItems="center">
-                        Identity Request
+                        Police Request
                     </Typography>
                 </Box>
                 <Typography level="h4">Applied date: {details["applied-date"]}</Typography>
@@ -43,4 +42,4 @@ function IdentityCard({ index, details, showDetails }){
     </>;
 }
 
-export default IdentityCard;
+export default PoliceCard;
