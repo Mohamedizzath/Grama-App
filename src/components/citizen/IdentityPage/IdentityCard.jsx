@@ -11,7 +11,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function IdentityCard({ index, details, showDetails }){
     const status = details["status"];
-    let color = status === "PENDING" ? "primary" : (status === "VERIFIED" ? "success" : "danger" )
+    let color = status === "Pending" ? "primary" : (status === "Verified" ? "success" : "danger" );
+
+    // Formatting the date
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(details["applied_date"][0]).toLocaleDateString("en-US", options);
 
     return <>
         <Card variant="outlined" key={index} value={index} color={color} sx={{ 
@@ -28,7 +32,7 @@ function IdentityCard({ index, details, showDetails }){
                         Identity Request
                     </Typography>
                 </Box>
-                <Typography level="h4">Applied date: {details["applied-date"]}</Typography>
+                <Typography level="h4">Applied date: {date}</Typography>
             </Box>
             <Box display="flex" justifyContent="flex-start" alignItems="center">
                 <Chip color={color} size="sm">Status - {details["status"]}</Chip>
