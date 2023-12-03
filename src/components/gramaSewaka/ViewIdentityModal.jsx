@@ -2,13 +2,12 @@ import { Modal, ModalDialog, Box, Typography, Grid, FormControl, FormLabel, Inpu
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import AlarmIcon from '@mui/icons-material/Alarm';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import SaveIcon from '@mui/icons-material/Save'; 
 import React from "react";
+import { useState } from "react";
 
 function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
-    const [selectedStatus, setSelectedStatus] = React.useState(details["status"]);
+    const [selectedStatus, setSelectedStatus] = useState((details["status"]));
 
     let headerTheme = "primary";
     let chipIcon = null;
@@ -28,12 +27,11 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
         chipDisplay = "Pending";
     }
 
-    const handleStatusChange = (event) => {
-        if (event && event.target) {
-            setSelectedStatus(event.target.value);
-        }
+    const handleStatusChange = (event, newValue) => {
+        setSelectedStatus(newValue);
     };
 
+    // handle status change when saving modal
     const handleSave = () => {
         console.log("Status Changed:", selectedStatus);
         setViewOpen(false);
@@ -106,6 +104,22 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                                     <Input value={details["grama-division"]} /> 
                                 </FormControl>
                             </Grid>
+                            {/* allow status change only if status is pending */}
+                            {
+                                details["status"] === "PENDING" && (
+                                    <Grid xs={12} md={6}>
+                                        <FormControl>
+                                            <FormLabel>Status</FormLabel>
+                                            <Select defaultValue={selectedStatus} onChange={handleStatusChange}>
+                                                <Option value="VERIFIED">Verified</Option>
+                                                <Option value="REJECTED">Rejected</Option>
+                                                <Option value="PENDING">Pending</Option>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                )
+                            }
+                            {/* to display approved by / rejected by details */}
                             {
                                 details["status"] !== "PENDING" && (
                                     <Grid xs={12} md={12}>
@@ -116,8 +130,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                                                     <Box display="flex" flexDirection="column">
                                                         <Typography level="h4">Approved by - {details["approved-by"]["name"]}</Typography>
                                                         <Typography level="body-sm">Approved date - {details["approved-by"]["approved-date"]}</Typography> 
-                                                        </Box>
-                                                    <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
+                                                    </Box>
                                                 </Box>
                                             )
                                         }
@@ -128,7 +141,6 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                                                         <Typography level="h4">Rejected by - {details["approved-by"]["name"]}</Typography>
                                                         <Typography level="body-sm">Rejected date - {details["approved-by"]["approved-date"]}</Typography> 
                                                     </Box>
-                                                    <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
                                                 </Box>
                                             )
                                         }
@@ -137,21 +149,9 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                             }
                             <Grid md={12} display="flex" justifyContent="center" sx={{ marginTop: "12px"}}>
                                 {
-                                    details["status"] === "PENDING" ? (
+                                    details["status"] === "PENDING" && (
                                         <>
-                                            <FormControl>
-                                                <FormLabel>Status</FormLabel>
-                                                <Select value={selectedStatus} onChange={handleStatusChange}>
-                                                    <Option value="VERIFIED">Verified</Option>
-                                                    <Option value="REJECTED">Rejected</Option>
-                                                </Select>
-                                            </FormControl>
-
                                             <Button color={headerTheme} variant="solid" startDecorator={<SaveIcon />} sx={{ marginLeft: "8px" }} onClick={handleSave}>Save</Button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Button color={headerTheme} variant="soft" startDecorator={<DeleteIcon/>}>Delete Request</Button>
                                         </>
                                     )
                                 }
