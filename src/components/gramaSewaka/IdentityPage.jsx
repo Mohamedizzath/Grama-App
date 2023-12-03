@@ -5,6 +5,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import identityReqs from "../../test-data/identityRequest";
 import { useState, useEffect } from "react";
+import ViewIdentityModal from "./ViewIdentityModal";
 
 function IdentityPage(){
 
@@ -15,25 +16,33 @@ function IdentityPage(){
     const [viewStatus, setViewStatus] = useState("ALL");
     const [showingDetail, setShowingDetail] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [showReq, setShowReq] = useState(false);
 
     useEffect(() => {
-        let tempReq = [];
-        if (viewStatus === "PENDING") {
-            tempReq = idReqs.filter((req) => req["status"] === "PENDING");
-        } else if (viewStatus === "VERIFIED") {
-            tempReq = idReqs.filter((req) => req["status"] === "VERIFIED");
-        } else if (viewStatus === "REJECTED") {
-            tempReq = idReqs.filter((req) => req["status"] === "REJECTED");
-        } else {
-            tempReq = idReqs;
-        }
-    
+        const filterRequests = () => {
+            if (viewStatus === "PENDING") {
+                return idReqs.filter((req) => req["status"] === "PENDING");
+            } else if (viewStatus === "VERIFIED") {
+                return idReqs.filter((req) => req["status"] === "VERIFIED");
+            } else if (viewStatus === "REJECTED") {
+                return idReqs.filter((req) => req["status"] === "REJECTED");
+            } else {
+                return idReqs;
+            }
+        };
+
+        const filteredReqs = filterRequests();
+        const totalItems = filteredReqs.length; //3
+        const calculatedTotalPages = Math.ceil(totalItems / rowsPerPage); //1
+
+        setTotalPages(calculatedTotalPages); 
+
         const startIndex = (currentPage - 1) * rowsPerPage;
         const endIndex = startIndex + rowsPerPage;
-        const slicedReqs = tempReq.slice(startIndex, endIndex);
-        console.log("total request", idReqs); //6
-    
-        setViewReq(slicedReqs); 
+        const slicedReqs = filteredReqs.slice(startIndex, endIndex);
+
+        setViewReq(slicedReqs);
     }, [viewStatus, idReqs, currentPage]);
     
 
@@ -44,8 +53,6 @@ function IdentityPage(){
     }
 
     function handlePageChange(event, value) {
-        const totalPages = Math.ceil(idReqs.length / rowsPerPage); 
-
         if (value > 0 && value <= totalPages) {
             setCurrentPage(value);
         }
@@ -103,6 +110,10 @@ function IdentityPage(){
                         ))}
                     </tbody>
                 </Table>
+                {/* Individual request showing modal */}
+                {
+                    showReq && <ViewIdentityModal viewOpen={showReq} setViewOpen={setShowReq} details={showingDetail} />
+                }
             </Sheet>  
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1rem' }}>
                 <Button variant="outlined" size="small" color="main"
@@ -112,9 +123,9 @@ function IdentityPage(){
                 >
                     <KeyboardArrowLeftIcon fontSize="small" />
                 </Button>
-                <Typography level="body-xs">Page {currentPage}</Typography>
+                <Typography level="body-xs">Page {currentPage} of {totalPages}</Typography>
                 <Button variant="outlined" size="small" color="main"
-                    disabled={currentPage * rowsPerPage >= idReqs.length}
+                    disabled={currentPage >= totalPages}
                     onClick={(e) => handlePageChange(e, currentPage + 1)}
                     sx={{ marginLeft: '8px' }}
                 >
