@@ -1,42 +1,54 @@
 import React from "react";
 import SubHeader from "./subHeader";
-import { Box, Typography, Select, Option } from "@mui/joy";
-import { Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material";
+import { Box, Typography, Table, Select, Option, Sheet, Button  } from "@mui/joy";
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import identityReqs from "../../test-data/identityRequest";
 import { useState, useEffect } from "react";
 
 function IdentityPage(){
 
-    // Handle get identity requests
+    const rowsPerPage = 4;
+
     const [idReqs, setIdReqs] = useState(identityReqs);
-    const [viewReqs, setViewReq] = useState(identityReqs);
-
-    // Managing view status of cards
-    const [ viewStatus, setViewStatus ] = useState("ALL");
-
+    const [viewReqs, setViewReq] = useState([]); // 3
+    const [viewStatus, setViewStatus] = useState("ALL");
     const [showingDetail, setShowingDetail] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    // Managing req cards
     useEffect(() => {
         let tempReq = [];
-        if(viewStatus === "PENDING"){
-            tempReq = idReqs.filter(req => req["status"] === "PENDING");
-        } else if(viewStatus === "VERIFIED"){
-            tempReq = idReqs.filter(req => req["status"] === "VERIFIED");
-        } else if(viewStatus === "REJECTED"){
-            tempReq = idReqs.filter(req => req["status"] === "REJECTED");
+        if (viewStatus === "PENDING") {
+            tempReq = idReqs.filter((req) => req["status"] === "PENDING");
+        } else if (viewStatus === "VERIFIED") {
+            tempReq = idReqs.filter((req) => req["status"] === "VERIFIED");
+        } else if (viewStatus === "REJECTED") {
+            tempReq = idReqs.filter((req) => req["status"] === "REJECTED");
         } else {
             tempReq = idReqs;
         }
-
-        setViewReq(tempReq);
-        console.log(tempReq);
-    }, [viewStatus]);
+    
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const slicedReqs = tempReq.slice(startIndex, endIndex);
+        console.log("total request", idReqs); //6
+    
+        setViewReq(slicedReqs); 
+    }, [viewStatus, idReqs, currentPage]);
+    
 
     // view details function
     function showDetailRequest(details) {
         setShowingDetail(details);
         setShowReq(true);
+    }
+
+    function handlePageChange(event, value) {
+        const totalPages = Math.ceil(idReqs.length / rowsPerPage); 
+
+        if (value > 0 && value <= totalPages) {
+            setCurrentPage(value);
+        }
     }
 
 
@@ -52,31 +64,63 @@ function IdentityPage(){
                     <Option key="REJECTED" value="REJECTED">Rejected requests</Option>
                 </Select>
             </Box>
-            <Table>
-                <TableHead>
-                <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Full Name</TableCell>
-                    <TableCell>NIC</TableCell>
-                    <TableCell>Address</TableCell>
-                    <TableCell>Contact Number</TableCell>
-                    <TableCell>Action</TableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                {viewReqs.map((req, index) => (
-                    <TableRow key={index}>
-                    <TableCell>{req["full-name"]}</TableCell>
-                    <TableCell>{req.nic}</TableCell>
-                    <TableCell>{req.address}</TableCell>
-                    <TableCell>{req["contact-num"]}</TableCell>
-                    <TableCell>
-                        <button onClick={() => showDetailRequest(req)}>View Details</button>
-                    </TableCell>
-                    </TableRow>
-                ))}
-                </TableBody>
-            </Table>     
+            <Sheet
+                sx={{
+                    '--TableCell-height': '40px',
+                    '--TableHeader-height': 'calc(1 * var(--TableCell-height))',
+                    height: 300,
+                    overflow: 'auto',
+                    backgroundSize: '100% 40px, 100% 40px, 100% 14px, 100% 14px',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'local, local, scroll, scroll',
+                    backgroundPosition: '0 var(--TableHeader-height), 0 100%, 0 var(--TableHeader-height), 0 100%',
+                    backgroundColor: '#FFFFFF',           
+                }}
+            >
+                <Table stickyHeader>
+                    <thead>
+                        <tr>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>Applied Date</Typography></th>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>Full Name</Typography></th>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>NIC</Typography></th>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>Address</Typography></th>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>Contact Number</Typography></th>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>Action</Typography></th>
+                        </tr>
+                    </thead>
+                    <tbody style={{ overflowY: 'auto', maxHeight: '300px' }}>
+                        {viewReqs.map((req, index) => (
+                            <tr key={index}>
+                                <td><Typography level="body-sm">{req["applied-date"]}</Typography></td>
+                                <td><Typography level="body-sm">{req["full-name"]}</Typography></td>
+                                <td><Typography level="body-sm">{req.nic}</Typography></td>
+                                <td><Typography level="body-sm">{req.address}</Typography></td>
+                                <td><Typography level="body-sm">{req["contact-num"]}</Typography></td>
+                                <td>
+                                    <Button color="main" variant="outlined" sx={{ maxHeight: '3px', paddingX: '10px', fontSize:'10px' }} onClick={() => showDetailRequest(req)}>View Details</Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </Sheet>  
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '1rem' }}>
+                <Button variant="outlined" size="small" color="main"
+                    disabled={currentPage === 1}
+                    onClick={(e) => handlePageChange(e, currentPage - 1)}
+                    sx={{ marginRight: '8px' }}
+                >
+                    <KeyboardArrowLeftIcon fontSize="small" />
+                </Button>
+                <Typography level="body-xs">Page {currentPage}</Typography>
+                <Button variant="outlined" size="small" color="main"
+                    disabled={currentPage * rowsPerPage >= idReqs.length}
+                    onClick={(e) => handlePageChange(e, currentPage + 1)}
+                    sx={{ marginLeft: '8px' }}
+                >
+                    <KeyboardArrowRightIcon fontSize="small" />
+                </Button>
+            </div>
         </Box>
     );
 }
