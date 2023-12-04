@@ -5,7 +5,7 @@ import AlarmIcon from '@mui/icons-material/Alarm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-function ViewIdentityModal({ viewOpen, setViewOpen, details }){
+function ViewIdentityModal({ viewOpen, setViewOpen, details, deleteReq }){
     let headerTheme = "primary";
     let chipIcon = null;
     let chipDisplay = "Pending";
@@ -26,8 +26,8 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
 
     // Formatting the date
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const date = new Date(details["applied_date"][0]).toLocaleDateString("en-US", options);
-    const dobDate = new Date(details["DOB"][0]).toLocaleDateString("en-US", options);
+    const date = new Date(details["applied_date"][0] * 1000).toLocaleDateString("en-US", options);
+    const dobDate = new Date(details["DOB"][0] * 1000).toLocaleDateString("en-US", options);
 
     return <>
         <Modal open={viewOpen} onClose={() => setViewOpen(false)}>
@@ -129,7 +129,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
                             }
                             <Grid md={12} display="flex" justifyContent="center" sx={{ marginTop: "12px"}}>
                                 {
-                                    details["status"] === "PENDING" && <Button color={headerTheme} variant="soft" startDecorator={<DeleteIcon/>}>Delete Request</Button>
+                                    details["status"] === "Pending" && <Button color={headerTheme} variant="soft" startDecorator={<DeleteIcon/>} onClick={() => deleteReq(details["id"])}>Delete Request</Button>
                                 }
                                 
                                 <Button color={headerTheme} variant="solid" startDecorator={<CloseIcon/>} sx={{ marginLeft: "8px" }} onClick={() => setViewOpen(false)}>Close</Button>

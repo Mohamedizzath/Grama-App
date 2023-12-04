@@ -9,13 +9,13 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
         contact number, email, address, dob, grama-division
 */
 
-function IdentityCard({ index, details, showDetails }){
+function IdentityCard({ index, details, showDetails, deleteReq }){
     const status = details["status"];
     let color = status === "Pending" ? "primary" : (status === "Verified" ? "success" : "danger" );
 
     // Formatting the date
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const date = new Date(details["applied_date"][0]).toLocaleDateString("en-US", options);
+    const contDate = new Date(details["applied_date"][0] * 1000).toLocaleDateString("en-US", options);
 
     return <>
         <Card variant="outlined" key={index} value={index} color={color} sx={{ 
@@ -32,14 +32,14 @@ function IdentityCard({ index, details, showDetails }){
                         Identity Request
                     </Typography>
                 </Box>
-                <Typography level="h4">Applied date: {date}</Typography>
+                <Typography level="h4">Applied date: {contDate}</Typography>
             </Box>
             <Box display="flex" justifyContent="flex-start" alignItems="center">
                 <Chip color={color} size="sm">Status - {details["status"]}</Chip>
             </Box>
             <Box display="flex" alignItems="center" justifyContent="center">
                 {
-                    status === "PENDING" && <Button color={color} variant="soft" size="sm" sx={{ marginRight: "4px" }} startDecorator={<ClearIcon />}>Delete</Button>
+                    status === "Pending" && <Button color={color} variant="soft" size="sm" sx={{ marginRight: "4px" }} startDecorator={<ClearIcon />} onClick={() => deleteReq(details["id"])}>Delete</Button>
                 }
                 <Button color={color} variant="solid" size="sm" endDecorator={<ArrowForwardIcon/>} onClick={() => showDetails(details)}>View Details</Button>
             </Box>

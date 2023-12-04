@@ -1,5 +1,5 @@
 import { useAuthContext } from "@asgardeo/auth-react";
-import { Box, Button, Chip, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Option, Select, Divider, Card, CardCover, Skeleton } from "@mui/joy";
+import { Box, Button, Chip, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Option, Select, Divider, Card, CardCover, Skeleton, Snackbar } from "@mui/joy";
 import { Typography } from "@mui/joy";
 import { useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
@@ -36,7 +36,7 @@ function IdentityPage(){
     async function openPostModal(){
         if(divionSelect){
             // Grama divisios already fetched!
-            setPostModalData({...postModalData, gramasevaka_divison: divionSelect[0].id});
+            setPostModalData({...postModalData, gramasevaka_division: divionSelect[0].id});
 
             setPostModal(true);
             return;
@@ -53,7 +53,7 @@ function IdentityPage(){
             // Set up select options
             const divisons = response.data;
             setDivionSelect(divisons);
-            setPostModalData({...postModalData, gramasevaka_divison: divisons[0].id});
+            setPostModalData({...postModalData, gramasevaka_division: divisons[0].id});
 
             setPostModal(true);
         } else {
@@ -103,11 +103,44 @@ function IdentityPage(){
         return true;
     }
 
-    function handlePostModal(){
-        
+    const [savingReq, setSavingReq] = useState(false);
 
-        // Submit the request
-        console.log(postModalData);
+    // Handling post identity request
+    const [postSnack, setPostSnack] = useState(false);
+    const [postSnackObj, setPostSnackObj] = useState({ color: "neutral", msg: ""});
+
+    async function handlePostModal(){
+        // Setting saving request
+        setSavingReq(true);
+        const dob = new Date(postModalData.DOB);
+        const year = dob.getFullYear();
+        const month = dob.getMonth();
+        const date = dob.getDate();
+
+        const epoch = new Date(year, month, date).getTime() / 1000;
+
+        const reqBody = {...postModalData, DOB: [epoch, 0]};
+        
+        console.log(reqBody);
+
+        const response = await axios({ 
+            method: 'post',
+            url: 'http://localhost:9090/identity/requests',
+            data: reqBody,
+        });
+
+        if(response.status === 201){
+            setPostSnack(true);
+            setPostSnackObj({ color: "success", msg: "Identity request successfully added"});
+        } else {
+            setPostSnack(true);
+            setPostSnackObj({ color: "danger", msg: "Error occured when identity request creation"});
+        }
+
+        setSavingReq(false);
+        
+        setPostModal(false);
+        initialLoad();
     }
 
     // Handle get identity requests
@@ -134,6 +167,8 @@ function IdentityPage(){
             const NIC = json.nic;
 
             sessionStorage.setItem('User-NIC', NIC);
+            // Setting post modal nic
+            setPostModalData({...postModalData, NIC: NIC});
         } else {
             // Error occured 
             setShowError(true);
@@ -181,11 +216,11 @@ function IdentityPage(){
     useEffect(() => {
         let tempReq = [];
         if(viewStatus === "PENDING"){
-            tempReq = idReqs.filter(req => req["status"] === "PENDING");
+            tempReq = idReqs.filter(req => req["status"] === "Pending");
         } else if(viewStatus === "VERIFIED"){
-            tempReq = idReqs.filter(req => req["status"] === "VERIFIED");
+            tempReq = idReqs.filter(req => req["status"] === "Verified");
         } else if(viewStatus === "REJECTED"){
-            tempReq = idReqs.filter(req => req["status"] === "REJECTED");
+            tempReq = idReqs.filter(req => req["status"] === "Rejected");
         } else {
             tempReq = idReqs;
         }
@@ -206,6 +241,27 @@ function IdentityPage(){
 
         setShowingDetail(details);
         setShowReq(true);
+    }
+
+    // Delete identity request
+    async function deleteIdentityReq(requestId){
+        const response = await axios({ 
+            method: 'delete',
+            url: `http://localhost:9090/identity/requests/${requestId}`,
+        });
+
+        if(response.status === 200){
+            setPostSnack(true);
+            setPostSnackObj({ color: "success", msg: "Identity request successfully deleted"});
+        } else {
+            setPostSnack(true);
+            setPostSnackObj({ color: "danger", msg: "Error occured when deleting identity request"});
+        }
+
+        setShowingDetail(null);
+        setShowReq(false);
+
+        initialLoad();
     }
 
     return (<>
@@ -274,7 +330,7 @@ function IdentityPage(){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>NIC number</FormLabel>
-                                    <Input color={identityDataError === "NIC" ? "danger" : "neutral"} value={postModalData["NIC"]} onChange={(e) => setPostModalData({...postModalData, NIC: e.target.value})} /> 
+                                    <Input color={identityDataError === "NIC" ? "danger" : "neutral"} value={postModalData["NIC"]} disabled={true}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
@@ -313,7 +369,7 @@ function IdentityPage(){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Grama division</FormLabel>
-                                    <Select placeholder="Select division" value={postModalData["gramasevaka_divison"]} onChange={(e) => setPostModalData({...postModalData, gramasevaka_divison: e.target.value})}>
+                                    <Select placeholder="Select division" value={postModalData["gramasevaka_division"]} onChange={(e) => setPostModalData({...postModalData, gramasevaka_division: e.target.value})}>
                                         {
                                             divionSelect && divionSelect.map(division => <Option key={division["id"]} value={division["id"]}>{division["GN_division"] + "(" + division["DS_division"] + ")"} </Option>)
                                         }
@@ -321,16 +377,27 @@ function IdentityPage(){
                                 </FormControl>
                             </Grid>
                             <Grid md={12} display="flex" justifyContent="center" sx={{ marginTop: "12px"}}>
-                                <Button color="main" variant="soft" startDecorator={<CloseIcon/>} onClick={() => setPostModal(false)}>Cancel</Button>
-                                <Button color="main" variant="solid" startDecorator={<CheckIcon/>} disabled={identityDataError ? true : false} sx={{ marginLeft: "8px" }} onClick={handlePostModal}>Create</Button>
+                                <Button color="main" variant="soft" startDecorator={<CloseIcon/>} disabled={savingReq} onClick={() => setPostModal(false)}>Cancel</Button>
+                                <Button color="main" variant="solid" startDecorator={<CheckIcon/>} disabled={identityDataError || savingReq ? true : false} sx={{ marginLeft: "8px" }} onClick={handlePostModal}>Create</Button>
                             </Grid>
                         </Grid>
                     </Box>
                 </ModalDialog>
             </Modal>
+            <Snackbar autoHideDuration={3000} open={postSnack} color={postSnackObj.color} variant="soft" onClose={
+                (event, reason) => {
+                    if(reason === "clickaway"){
+                        return;
+                    } else {
+                        setPostSnack(false);
+                    }
+                }
+            }>
+                {postSnackObj.msg}
+                </Snackbar>
             {/* Individual request showing modal */}
             {
-                showReq && <ViewIdentityModal viewOpen={showReq} setViewOpen={setShowReq} details={showingDetail} />
+                showReq && <ViewIdentityModal viewOpen={showReq} setViewOpen={setShowReq} details={showingDetail} deleteReq={deleteIdentityReq} />
             }
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography level="h2">Hii! {state.displayName}</Typography>
@@ -359,7 +426,7 @@ function IdentityPage(){
                     ))
                 }
                 {
-                    !showSkeletonCards && viewReqs.length > 0 && viewReqs.map((req, index) => <IdentityCard index={index} details={req} showDetails={showDetailRequest}/>)
+                    !showSkeletonCards && viewReqs.length > 0 && viewReqs.map((req, index) => <IdentityCard index={index} details={req} showDetails={showDetailRequest} deleteReq={deleteIdentityReq}/>)
                 }
                 {
                     !showSkeletonCards && viewReqs.length < 1 && (
@@ -390,7 +457,7 @@ const postModalDefault = {
     "email": "email@example.com",
     "address": "Your address",
     "DOB": new Date(),
-    "gramasevaka_divison": "",
+    "gramasevaka_division": "",
 }
 
 export default IdentityPage;
