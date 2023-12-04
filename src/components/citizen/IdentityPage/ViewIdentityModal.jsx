@@ -5,16 +5,16 @@ import AlarmIcon from '@mui/icons-material/Alarm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-function ViewIdentityModal({ viewOpen, setViewOpen, details }){
+function ViewIdentityModal({ viewOpen, setViewOpen, details, deleteReq }){
     let headerTheme = "primary";
     let chipIcon = null;
     let chipDisplay = "Pending";
 
-    if(details["status"] === "VERIFIED"){
+    if(details["status"] === "Verified"){
         headerTheme = "success";
         chipIcon = <CheckIcon/>
         chipDisplay = "Verified";
-    } else if(details["status"] === "REJECTED"){
+    } else if(details["status"] === "Rejected"){
         headerTheme = "danger";
         chipIcon = <CloseIcon />
         chipDisplay = "Rejected"
@@ -23,6 +23,11 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
         chipIcon = <AlarmIcon />
         chipDisplay = "Pending";
     }
+
+    // Formatting the date
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(details["applied_date"][0] * 1000).toLocaleDateString("en-US", options);
+    const dobDate = new Date(details["DOB"][0] * 1000).toLocaleDateString("en-US", options);
 
     return <>
         <Modal open={viewOpen} onClose={() => setViewOpen(false)}>
@@ -34,7 +39,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
                     <Box sx={{ padding: "16px"}}>
                         <Typography level="body-md">Indentity Request Details</Typography>
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Typography level="h2">Applied date: {details["applied-date"]}</Typography>
+                            <Typography level="h2">Applied date: {date}</Typography>
                             <Chip color={headerTheme} startDecorator={chipIcon} sx={{ paddingX: "16px", paddingY: "4px"}}>{chipDisplay}</Chip>
                         </Box>
                         
@@ -42,19 +47,19 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Full name(with initials)</FormLabel>
-                                    <Input value={details["full-name-initials"]}/> 
+                                    <Input value={details["initials_fullname"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Full name(without initials)</FormLabel>
-                                    <Input value={details["full-name"]}/> 
+                                    <Input value={details["fullname"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>NIC number</FormLabel>
-                                    <Input value={details["nic"]}/> 
+                                    <Input value={details["NIC"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
@@ -66,7 +71,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Contact number</FormLabel>
-                                    <Input value={details["contact-num"]}/> 
+                                    <Input value={details["contact_num"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
@@ -84,21 +89,21 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Date of birth</FormLabel>
-                                    <Input type="date" value={details["dob"]} /> 
+                                    <Input value={dobDate} /> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Grama division</FormLabel>
-                                    <Input value={details["grama-division"]} /> 
+                                    <Input value={details["division"]["GN_division"] + "(" + details["division"]["DS_division"] + ")"} /> 
                                 </FormControl>
                             </Grid>
                             {
-                                details["status"] !== "PENDING" && (
+                                details["status"] !== "Pending" && (
                                     <Grid xs={12} md={12}>
                                         <Typography level="body-sm">Request status details</Typography>
                                         {
-                                            details["status"] === "VERIFIED" && (
+                                            details["status"] === "Verified" && (
                                                 <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                     <Box display="flex" flexDirection="column">
                                                         <Typography level="h4">Approved by - {details["approved-by"]["name"]}</Typography>
@@ -109,7 +114,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
                                             )
                                         }
                                         {
-                                            details["status"] === "REJECTED" && (
+                                            details["status"] === "Rejected" && (
                                                 <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                     <Box display="flex" flexDirection="column">
                                                         <Typography level="h4">Rejected by - {details["approved-by"]["name"]}</Typography>
@@ -124,7 +129,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }){
                             }
                             <Grid md={12} display="flex" justifyContent="center" sx={{ marginTop: "12px"}}>
                                 {
-                                    details["status"] === "PENDING" && <Button color={headerTheme} variant="soft" startDecorator={<DeleteIcon/>}>Delete Request</Button>
+                                    details["status"] === "Pending" && <Button color={headerTheme} variant="soft" startDecorator={<DeleteIcon/>} onClick={() => deleteReq(details["id"])}>Delete Request</Button>
                                 }
                                 
                                 <Button color={headerTheme} variant="solid" startDecorator={<CloseIcon/>} sx={{ marginLeft: "8px" }} onClick={() => setViewOpen(false)}>Close</Button>
