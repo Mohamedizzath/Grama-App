@@ -5,17 +5,17 @@ import React, { useEffect } from "react";
 function subHeader(){
     const { state, getDecodedIDToken } = useAuthContext();
     
-    useEffect(() => {
-        const displayIDTokenInfo = async () => {
-            try {
-                const decodedIDToken = await getDecodedIDToken();
-                console.log('Decoded ID Token:', decodedIDToken);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        };
-        displayIDTokenInfo();
-    }, []);
+    // useEffect(() => {
+    //     const displayIDTokenInfo = async () => {
+    //         try {
+    //             const decodedIDToken = await getDecodedIDToken();
+    //             console.log('Decoded ID Token:', decodedIDToken);
+    //         } catch (error) {
+    //             console.error('Error:', error);
+    //         }
+    //     };
+    //     displayIDTokenInfo();
+    // }, []);
     
     return(
         <Box>

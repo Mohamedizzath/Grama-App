@@ -1,23 +1,25 @@
 import { Modal, ModalDialog, Box, Typography, Grid, FormControl, FormLabel, Input, Button, Select, Option, Chip } from "@mui/joy";
 import CloseIcon from '@mui/icons-material/Close';
+import { useAuthContext } from "@asgardeo/auth-react";
 import CheckIcon from '@mui/icons-material/Check';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import SaveIcon from '@mui/icons-material/Save'; 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
 function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
     const [selectedStatus, setSelectedStatus] = useState((details["status"]));
+    // console.log(sessionStorage.getItem('User-name'));
 
     let headerTheme = "primary";
     let chipIcon = null;
     let chipDisplay = "Pending";
 
-    if(details["status"] === "VERIFIED"){
+    if(details["status"] === "Verified"){
         headerTheme = "success";
         chipIcon = <CheckIcon/>
         chipDisplay = "Verified";
-    } else if(details["status"] === "REJECTED"){
+    } else if(details["status"] === "Rejected"){
         headerTheme = "danger";
         chipIcon = <CloseIcon />
         chipDisplay = "Rejected"
@@ -31,11 +33,38 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
         setSelectedStatus(newValue);
     };
 
-    // handle status change when saving modal
-    const handleSave = () => {
-        console.log("Status Changed:", selectedStatus);
-        setViewOpen(false);
+    const { state, getAccessToken } = useAuthContext();
+    const request_id = details["id"];
+    const grama_name = sessionStorage.getItem('User-name');
+    const status = selectedStatus;
+
+    const handleSave = async () => {
+        try {
+            const response = await fetch('http://localhost:9090/identity/requests', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await getAccessToken()}`
+                },
+                body: JSON.stringify({
+                    grama_name,
+                    request_id,
+                    status
+                })
+            });
+    
+            if (response.ok) {
+                console.log("Status Changed:", selectedStatus);
+                setViewOpen(false);
+            } else {
+                console.error('Error updating status:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error during status update:', error);
+        }
     };
+    
 
     return (
         <>
@@ -45,7 +74,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                     <Box sx={{ padding: "16px" }}>
                         <Typography level="body-md">Identity Request Details</Typography>
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Typography level="h2">Applied date: {details["applied-date"]}</Typography>
+                            <Typography level="h2">Applied date: {new Date(details["applied_date"][0] * 1000).toLocaleDateString()}</Typography>
                             <Chip color={headerTheme} startDecorator={chipIcon} sx={{ paddingX: "16px", paddingY: "4px" }}>{chipDisplay}</Chip>
                         </Box>
 
@@ -53,19 +82,19 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Full name(with initials)</FormLabel>
-                                    <Input value={details["full-name-initials"]}/> 
+                                    <Input value={details["initials_fullname"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Full name(without initials)</FormLabel>
-                                    <Input value={details["full-name"]}/> 
+                                    <Input value={details["fullname"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>NIC number</FormLabel>
-                                    <Input value={details["nic"]}/> 
+                                    <Input value={details["NIC"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
@@ -77,7 +106,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Contact number</FormLabel>
-                                    <Input value={details["contact-num"]}/> 
+                                    <Input value={details["contact_num"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
@@ -95,29 +124,29 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Date of birth</FormLabel>
-                                    <Input type="date" value={details["dob"]} /> 
+                                    <Input value={new Date(details["DOB"][0] * 1000).toLocaleDateString()} /> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Grama division</FormLabel>
-                                    <Input value={details["grama-division"]} /> 
+                                    <Input value={details['division']} /> 
                                 </FormControl>
                             </Grid>
                             {/* allow status change only if status is pending */}
                             {
-                                details["status"] === "PENDING" && (
+                                details["status"] === "Pending" && (
                                     <Grid xs={12} md={6}>
                                         <FormControl>
                                             <FormLabel>Status</FormLabel>
                                             <Select defaultValue={selectedStatus} onChange={handleStatusChange} sx={{ backgroundColor: 'lightgray' }}>
-                                            <Option value="PENDING" sx={{ color: 'gray', pointerEvents: 'none' }}>
+                                            <Option value="Pending" sx={{ color: 'gray', pointerEvents: 'none' }}>
                                                 Pending
                                             </Option>
-                                                <Option value="VERIFIED" sx={{ color: 'green' }}>
+                                                <Option value="Verified" sx={{ color: 'green' }}>
                                                     Verify
                                                 </Option>
-                                                <Option value="REJECTED" sx={{ color: 'red' }}>
+                                                <Option value="Rejected" sx={{ color: 'red' }}>
                                                     Reject
                                                 </Option>
                                             </Select>
@@ -127,25 +156,25 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                             }
                             {/* to display approved by / rejected by details */}
                             {
-                                details["status"] !== "PENDING" && (
+                                details["status"] !== "Pending" && (
                                     <Grid xs={12} md={12}>
                                         <Typography level="body-sm">Request status details</Typography>
                                         {
-                                            details["status"] === "VERIFIED" && (
+                                            details["status"] === "Verified" && (
                                                 <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                     <Box display="flex" flexDirection="column">
-                                                        <Typography level="h4">Approved by - {details["approved-by"]["name"]}</Typography>
-                                                        <Typography level="body-sm">Approved date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                        <Typography level="h4">Approved by - {details["approved_by"]}</Typography>
+                                                        <Typography level="body-sm">Approved date - {new Date().toLocaleDateString()}</Typography> 
                                                     </Box>
                                                 </Box>
                                             )
                                         }
                                         {
-                                            details["status"] === "REJECTED" && (
+                                            details["status"] === "Rejected" && (
                                                 <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                     <Box display="flex" flexDirection="column">
-                                                        <Typography level="h4">Rejected by - {details["approved-by"]["name"]}</Typography>
-                                                        <Typography level="body-sm">Rejected date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                        <Typography level="h4">Rejected by - {details["approved_by"]}</Typography>
+                                                        <Typography level="body-sm">Rejected date - {new Date().toLocaleDateString()}</Typography> 
                                                     </Box>
                                                 </Box>
                                             )
@@ -155,7 +184,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                             }
                             <Grid md={12} display="flex" justifyContent="center" sx={{ marginTop: "12px"}}>
                                 {
-                                    details["status"] === "PENDING" && (
+                                    details["status"] === "Pending" && (
                                         <>
                                             <Button color={headerTheme} variant="solid" startDecorator={<SaveIcon />} sx={{ marginLeft: "8px" }} onClick={handleSave}>Save</Button>
                                         </>
