@@ -11,11 +11,11 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
     let chipIcon = null;
     let chipDisplay = "Pending";
 
-    if(details["status"] === "VERIFIED"){
+    if(details["status"] === "Verified"){
         headerTheme = "success";
         chipIcon = <CheckIcon/>
         chipDisplay = "Verified";
-    } else if(details["status"] === "REJECTED"){
+    } else if(details["status"] === "Rejected"){
         headerTheme = "danger";
         chipIcon = <CloseIcon />
         chipDisplay = "Rejected"
@@ -54,39 +54,44 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>NIC number</FormLabel>
-                                    <Input value={details["nic"]}/> 
+                                    <Input value={details["NIC"]}/> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Grama divison</FormLabel>
-                                    <Input value={details["grama-division"]}/> 
+                                    <Input value={details["division"]["GN_division"] + "(" + details["division"]["DS_division"] + ")"}/> 
                                 </FormControl>
                             </Grid>
                             {
                                 details["status"] !== "PENDING" && (
                                     <Grid xs={12} md={12}>
-                                        <Typography level="body-sm">Request status details</Typography>
                                         {
                                             details["status"] === "VERIFIED" && (
-                                                <Box display="flex" justifyContent="space-between" alignItems="center">  
-                                                    <Box display="flex" flexDirection="column">
-                                                        <Typography level="h4">Approved by - {details["approved-by"]["name"]}</Typography>
-                                                        <Typography level="body-sm">Approved date - {details["approved-by"]["approved-date"]}</Typography> 
-                                                        </Box>
-                                                    <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
-                                                </Box>
+                                                <>
+                                                    <Typography level="body-sm">Request status details</Typography>
+                                                    <Box display="flex" justifyContent="space-between" alignItems="center">  
+                                                        <Box display="flex" flexDirection="column">
+                                                            <Typography level="h4">Approved by - {details["approved-by"]["name"]}</Typography>
+                                                            <Typography level="body-sm">Approved date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                            </Box>
+                                                        <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
+                                                    </Box>
+                                                </>
                                             )
                                         }
                                         {
                                             details["status"] === "REJECTED" && (
-                                                <Box display="flex" justifyContent="space-between" alignItems="center">  
-                                                    <Box display="flex" flexDirection="column">
-                                                        <Typography level="h4">Rejected by - {details["approved-by"]["name"]}</Typography>
-                                                        <Typography level="body-sm">Rejected date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                <>
+                                                    <Typography level="body-sm">Request status details</Typography>
+                                                    <Box display="flex" justifyContent="space-between" alignItems="center">  
+                                                        <Box display="flex" flexDirection="column">
+                                                            <Typography level="h4">Rejected by - {details["approved-by"]["name"]}</Typography>
+                                                            <Typography level="body-sm">Rejected date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                        </Box>
+                                                        <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
                                                     </Box>
-                                                    <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
-                                                </Box>
+                                                </>
                                             )
                                         }
                                     </Grid>

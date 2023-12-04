@@ -120,8 +120,6 @@ function IdentityPage(){
         const epoch = new Date(year, month, date).getTime() / 1000;
 
         const reqBody = {...postModalData, DOB: [epoch, 0]};
-        
-        console.log(reqBody);
 
         const response = await axios({ 
             method: 'post',
@@ -369,7 +367,7 @@ function IdentityPage(){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Grama division</FormLabel>
-                                    <Select placeholder="Select division" value={postModalData["gramasevaka_division"]} onChange={(e) => setPostModalData({...postModalData, gramasevaka_division: e.target.value})}>
+                                    <Select placeholder="Select division" value={postModalData["gramasevaka_division"]} onChange={(e, value) => setPostModalData({...postModalData, gramasevaka_division: value})}>
                                         {
                                             divionSelect && divionSelect.map(division => <Option key={division["id"]} value={division["id"]}>{division["GN_division"] + "(" + division["DS_division"] + ")"} </Option>)
                                         }

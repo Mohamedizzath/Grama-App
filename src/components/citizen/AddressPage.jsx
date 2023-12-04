@@ -1,4 +1,4 @@
-import { Typography, Box, Button, Chip, Divider, Card, CardCover, Select, Option, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, } from "@mui/joy";
+import { Typography, Box, Button, Chip, Divider, Card, CardCover, Select, Option, FormControl, FormLabel, Grid, Input, Modal, ModalDialog, Snackbar, Skeleton, } from "@mui/joy";
 import { useAuthContext } from "@asgardeo/auth-react";
 import AddIcon from '@mui/icons-material/Add';
 import { useState, useEffect } from "react";
@@ -8,33 +8,153 @@ import ViewAddressModal from "./AddressPage/ViewAddressModal";
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import emptyRequestImg from "../../assets/empty-requests.svg";
+import axios from "axios";
 
 function AddressPage(){
-    const { state } = useAuthContext();
+    const { state, getAccessToken } = useAuthContext();
 
-    /* Identity request create process
+    /* Address request create process
         Things needed - Address,
                         Nic number, Grama division
     */
 
+    // Fetching id requests for the first time
+    useEffect(() => {
+        initialLoad();
+    }, []);
+
+    async function initialLoad(){
+        let response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`
+            }
+        });
+
+        if(response.ok){
+            const json = await response.json();
+            const NIC = json.nic;
+
+            sessionStorage.setItem('User-NIC', NIC);
+            // Setting post modal nic
+            setPostModalData({...postModalData, NIC: NIC});
+        } else {
+            // Error occured 
+            setShowError(true);
+        }
+
+        // Second function call to get grama divisions
+        response = await axios({ 
+            method: 'get',
+            url: 'http://localhost:9090/gramadivisions',
+            responseType: "json",
+        });
+
+        if(response.status === 200){
+            // Set up select options
+            const divisions = response.data;
+            setDivionSelect(divisions);
+        } else {
+            // Error occured 
+            setShowError(true);
+        }
+
+        // Second function call to get all the requests
+        response = await axios({
+            method: 'get',
+            url: `http://localhost:9090/address/requests/nic/${sessionStorage.getItem('User-NIC')}`,
+            responseType: "json",
+        });
+
+        if(response.status === 200){
+            setAddressReqs(response.data);
+            setViewAddressReqs(response.data);
+
+            setShowSkeletonCards(false);
+        } else {
+            // Error occured 
+            setShowError(true);
+        }
+    }
+
     // Managing the state for the modal
     const [postModal, setPostModal] = useState(false);
+    const [postModalData, setPostModalData] = useState(postModalDefault);
+    const [addressDataError, setAddressDataError] = useState(null);
+    const [divionSelect, setDivionSelect] = useState(null);
+
+    // Handling post data the post data
+    // Debugging postmodal data
+    useEffect(() => {
+        const valid = checkPostModalData();
+
+        if(valid){
+            setAddressDataError(null);
+        }
+    }, [postModalData]);
+
+    function checkPostModalData(){
+        // Handling post modal
+        
+        if(!postModalData.address || (postModalData.address && postModalData.address.length < 1)){
+            setAddressDataError("address");
+            return false;
+        } else if(!postModalData.gramaDivision){
+            setAddressDataError("gramasevaka_division");
+            return false;
+        } 
+
+        return true;
+    }
+
+    // Handling post address request
+    const [postSnack, setPostSnack] = useState(false);
+    const [postSnackObj, setPostSnackObj] = useState({ color: "neutral", msg: ""});
+
+    const [savingReq, setSavingReq] = useState(false);
+
+    async function handlePostModal(){
+        // Setting saving request
+        setSavingReq(true);
+        const reqBody = postModalData;
+
+        const response = await axios({ 
+            method: 'post',
+            url: 'http://localhost:9090/address/requests',
+            data: reqBody,
+        });
+
+        if(response.status === 201){
+            setPostSnack(true);
+            setPostSnackObj({ color: "success", msg: "Address request successfully added"});
+        } else {
+            setPostSnack(true);
+            setPostSnackObj({ color: "danger", msg: "Error occured when Address request creation"});
+        }
+
+        setSavingReq(false);
+        
+        setPostModal(false);
+        initialLoad();
+    }
+    
 
     // Managing the status of address requests
     const [ viewStatus, setViewStatus ] = useState("ALL");
 
-    const [ addressReqs, setAddressReqs ] = useState(addressRequests);
-    const [ viewaddressReqs, setViewAddressReqs ] = useState(addressRequests);
+    const [ addressReqs, setAddressReqs ] = useState([]);
+    const [ viewaddressReqs, setViewAddressReqs ] = useState([]);
+
+    const [showSkeletonCards, setShowSkeletonCards] = useState(true);
     
     // Managing req cards
     useEffect(() => {
         let tempReq = [];
         if(viewStatus === "PENDING"){
-            tempReq = addressReqs.filter(req => req["status"] === "PENDING");
+            tempReq = addressReqs.filter(req => req["status"] === "Pending");
         } else if(viewStatus === "VERIFIED"){
-            tempReq = addressReqs.filter(req => req["status"] === "VERIFIED");
+            tempReq = addressReqs.filter(req => req["status"] === "Verified");
         } else if(viewStatus === "REJECTED"){
-            tempReq = addressReqs.filter(req => req["status"] === "REJECTED");
+            tempReq = addressReqs.filter(req => req["status"] === "Rejected");
         } else {
             tempReq = addressReqs;
         }
@@ -48,13 +168,18 @@ function AddressPage(){
 
     // Handle individual showing component
     function showDetailRequest(details){
+        // Getting grama divison
+        const division = divionSelect.filter(division => division.id === details.gramadivisionId);
+
+        details = {...details, division: division[0]};
+
         setShowingDetail(details);
         setShowReq(true);
     }
 
     return (<>
         <Box>
-            {/* Identity request create modal */}
+            {/* Address request create modal */}
             <Modal open={postModal} onClose={() => setPostModal(false)}>
                 <ModalDialog sx={{ padding: "0px", overflow: "hidden" }}>
                     <Box sx={{ height: "15px",
@@ -67,32 +192,44 @@ function AddressPage(){
                             <Grid md={12}>
                                 <FormControl>
                                     <FormLabel>Address</FormLabel>
-                                    <Input placeholder="Your address" /> 
+                                    <Input color={addressDataError === "address" ? "danger" : "neutral"} value={postModalData["address"]} onChange={(e) => setPostModalData({...postModalData, address: e.target.value})} /> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>NIC</FormLabel>
-                                    <Input placeholder="200107800876" /> 
+                                    <Input value={postModalData["NIC"]} /> 
                                 </FormControl>
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Grama division</FormLabel>
-                                    <Select placeholder="Select division">
-                                        <Option>Kollupitiya</Option>
-                                        <Option>Bambalapitiya</Option>
+                                    <Select color={addressDataError === "gramasevaka_division" ? "danger" : "neutral"} placeholder="Select division" value={postModalData["gramaDivision"]} onChange={(e, value) => setPostModalData({...postModalData, gramaDivision: value})}>
+                                        {
+                                            divionSelect && divionSelect.map(division => <Option key={division["id"]} value={division["id"]}>{division["GN_division"] + "(" + division["DS_division"] + ")"} </Option>)
+                                        }
                                     </Select>
                                 </FormControl>
                             </Grid>
                             <Grid md={12} display="flex" justifyContent="center" sx={{ marginTop: "12px"}}>
-                                <Button color="main" variant="soft" startDecorator={<CloseIcon/>} onClick={() => setPostModal(false)}>Cancel</Button>
-                                <Button color="main" variant="solid" startDecorator={<CheckIcon/>} sx={{ marginLeft: "8px" }}>Create</Button>
+                                <Button color="main" variant="soft" startDecorator={<CloseIcon/>} disabled={savingReq} onClick={() => setPostModal(false)}>Cancel</Button>
+                                <Button color="main" variant="solid" startDecorator={<CheckIcon/>} disabled={addressDataError || savingReq ? true : false} sx={{ marginLeft: "8px" }} onClick={handlePostModal}>Create</Button>
                             </Grid>
                         </Grid>
                     </Box>
                 </ModalDialog>
             </Modal>
+            <Snackbar autoHideDuration={3000} open={postSnack} color={postSnackObj.color} variant="soft" onClose={
+                (event, reason) => {
+                    if(reason === "clickaway"){
+                        return;
+                    } else {
+                        setPostSnack(false);
+                    }
+                }
+            }>
+                {postSnackObj.msg}
+                </Snackbar>
             {
                 showReq && <ViewAddressModal viewOpen={showReq} setViewOpen={setShowReq} details={showingDetail} />
             }
@@ -101,7 +238,7 @@ function AddressPage(){
                 <Button color="main" size="sm" variant="solid" startDecorator={<AddIcon />} onClick={() => setPostModal(true)}>New Address Request</Button> 
             </Box>
             <Chip color="primary" size="sm" variant="soft" sx={{ marginTop: "4px", marginBottom: "12px" }}>Email - {state.email}</Chip>
-            {/* Recent Identity requests */}
+            {/* Recent Address requests */}
             <Divider />
             <Box display="flex" justifyContent="space-between" alignItems="flex-end" sx={{ marginTop: "18px", marginBottom: "8px" }}>
                 <Typography level="h2">Address Requests</Typography>
@@ -116,11 +253,18 @@ function AddressPage(){
                     flexWrap: "wrap",
                 }}>
                 {
-                    viewaddressReqs.length > 0 && viewaddressReqs.map((req, index) => <AddressCard index={index} details={req} showDetails={showDetailRequest}/>)
+                    showSkeletonCards && [...Array(6).keys()].map(() => (
+                    <Card sx={{ width: "250px", height: "150px", marginX: "4px", marginY: "4px", display: 'flex', padding: 0,}}>
+                        <Skeleton />
+                    </Card>
+                    ))
+                }
+                {
+                    !showSkeletonCards && viewaddressReqs.length > 0 && viewaddressReqs.map((req, index) => <AddressCard index={index} details={req} showDetails={showDetailRequest}/>)
                 }
                 {/* Add empty reqs array placeholder */}
                 {
-                    viewaddressReqs.length < 1 && (
+                    !showSkeletonCards && viewaddressReqs.length < 1 && (
                         <Box display="flex" flexDirection="column" alignItems="center" sx={{ marginTop: "24px", width: "100%"}}>
                             <Card component="li" sx={{ width: 100, height: 100, border: 0 }}>
                                 <CardCover>
@@ -137,6 +281,12 @@ function AddressPage(){
             </Box>
         </Box>
     </>);
+}
+
+const postModalDefault = {
+    "NIC": "200107800876",
+    "address": "Your address",
+    "gramaDivision": ""
 }
 
 export default AddressPage;
