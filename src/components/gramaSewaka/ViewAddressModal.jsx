@@ -6,6 +6,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import React from "react";
 import { useState } from "react";
+import { useAuthContext } from "@asgardeo/auth-react";
 
 function ViewAddressModal({ viewOpen, setViewOpen, details }){
     const [selectedStatus, setSelectedStatus] = useState((details["status"]));
@@ -53,7 +54,7 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
                         </Box>
                         
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Typography level="h2">Applied date: {details["applied-date"]}</Typography>
+                            <Typography level="h2">Applied date: {new Date(details["applied_date"][0] * 1000).toLocaleDateString()}</Typography>
                             <Chip color={headerTheme} startDecorator={chipIcon} sx={{ paddingX: "16px", paddingY: "4px"}}>{chipDisplay}</Chip>
                         </Box>
                         
@@ -64,10 +65,18 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
                                     <Input value={details["address"]}/> 
                                 </FormControl>
                             </Grid>
+
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>NIC Number</FormLabel>
-                                    <Input value={details["nic"]}/> 
+                                    <Input value={details["NIC"]}/> 
+                                </FormControl>
+                            </Grid>
+
+                            <Grid xs={12} md={6}>
+                                <FormControl>
+                                    <FormLabel>Division</FormLabel>
+                                    <Input value={details["division"]}/> 
                                 </FormControl>
                             </Grid>
 

@@ -58,7 +58,7 @@ function IdentityPage(){
     useEffect(() => {
         const fetchIdentityRequests = async () => {
             try {
-                const gdid = '6c7f2204-8c5e-11ee-96e8-42010a8e0fea';
+                const gdid = sessionStorage.getItem('User-DID');
                 const rlimit = 10000;
 
                 let url = `http://localhost:9090/identity/requests?gdid=${gdid}&rlimit=${rlimit}`;
@@ -165,7 +165,6 @@ function IdentityPage(){
     }
 
     
-
     function handlePageChange(event, value) {
         if (value > 0 && value <= totalPages) {
             setCurrentPage(value);
