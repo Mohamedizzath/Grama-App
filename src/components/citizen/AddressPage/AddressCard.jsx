@@ -11,7 +11,11 @@ import CircleIcon from '@mui/icons-material/Circle';
 
 function AddressCard({ index, details, showDetails }){
     const status = details["status"];
-    let color = status === "PENDING" ? "primary" : (status === "VERIFIED" ? "success" : "danger" )
+    let color = status === "Pending" ? "primary" : (status === "Verified" ? "success" : "danger" );
+
+    // Formatting the date
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const contDate = new Date(details["applied_date"][0] * 1000).toLocaleDateString("en-US", options);
 
     return <>
         <Card variant="outlined" key={index} value={index} color={color} sx={{ 
@@ -28,11 +32,11 @@ function AddressCard({ index, details, showDetails }){
                         Address Request
                     </Typography>
                 </Box>
-                <Typography level="h4">Applied date: {details["applied-date"]}</Typography>
+                <Typography level="h4">Applied date: {contDate}</Typography>
                 <Typography level="body-sm">Address - {details["address"]}</Typography>
             </Box>
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Chip color="neutral" size="sm" startDecorator={<CircleIcon fontSize="sm" />}>{details["grama-division"]}</Chip>
+                <Chip color="neutral" size="sm" startDecorator={<CircleIcon fontSize="sm" />}>{details["NIC"]}</Chip>
                 <Chip color={color} size="sm">Status - {details["status"]}</Chip>
             </Box>
             <Box display="flex" alignItems="center" justifyContent="center">
