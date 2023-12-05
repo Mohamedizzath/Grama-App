@@ -1,7 +1,7 @@
 import React from "react";
 import SubHeader from "./subHeader";
 import { useAuthContext } from "@asgardeo/auth-react";
-import { Box, Typography, Table, Select, Option, Sheet, Button  } from "@mui/joy";
+import { Box, Typography, Table, Select, Option, Sheet, Button, Modal, ModalDialog  } from "@mui/joy";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { useState, useEffect } from "react";
@@ -19,6 +19,7 @@ function AddressPage(){
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [showReq, setShowReq] = useState(false);
+    const [showError, setShowError] = useState(false);   // Handling errors occurs in the identity page
 
     //for the requests based on gs division id 
     useEffect(() => {
@@ -40,10 +41,11 @@ function AddressPage(){
                     const data = await response.json();
                     setIdReqs(data);
                 } else {
-                    console.error('Error fetching identity requests:', response.statusText);
+                    console.error('Error fetching address requests:', response.statusText);
+                    setShowError(true);
                 }
             } catch (error) {
-                console.error('Error during fetchIdentityRequests:', error);
+                console.error('Error during fetch address Requests:', error);
             }
         };
 
@@ -100,10 +102,11 @@ function AddressPage(){
                     const data = await response.json();
                     setArrayOfDivisions(data);
                 } else {
-                    console.error('Error fetching divisions:', response.statusText);
+                    console.error('Error fetching divisions in address page:', response.statusText);
+                    setShowError(true);
                 }
             } catch (error) {
-                console.error('Error during divisions:', error);
+                console.error('Error during divisions in address page:', error);
             }
         }
     
@@ -140,6 +143,43 @@ function AddressPage(){
 
     return(
         <Box>
+            {/*error modal*/}
+            <Modal open={showError}>
+                <ModalDialog
+                    aria-labelledby="nested-modal-title"
+                    aria-describedby="nested-modal-description"
+                    sx={(theme) => ({
+                    [theme.breakpoints.only('xs')]: {
+                        top: 'unset',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        borderRadius: 0,
+                        transform: 'none',
+                        maxWidth: 'unset',
+                    },
+                    })}
+                >
+                    <Typography id="nested-modal-title" level="h2">
+                        Oops, Internal server error!
+                    </Typography>
+                    <Typography id="nested-modal-description" textColor="text.tertiary">
+                        Looks like the internal Server is having some issue. Please try again later.
+                    </Typography>
+                    <Box
+                    sx={{
+                        mt: 1,
+                        display: 'flex',
+                        gap: 1,
+                        flexDirection: { xs: 'column', sm: 'row-reverse' },
+                    }}
+                    >
+                    <Button variant="solid" color="main" onClick={() => window.location.reload()}>
+                        Refresh page
+                    </Button>
+                    </Box>
+                </ModalDialog>
+            </Modal>
             <SubHeader />
             <Box display="flex" justifyContent="space-between" alignItems="flex-end" sx={{ marginTop: "18px", marginBottom: "8px" }}>
                 <Typography level="h2">Address Requests</Typography>

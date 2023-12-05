@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuthContext } from "@asgardeo/auth-react";
 import SubHeader from "./subHeader";
-import { Box, Typography, Table, Select, Option, Sheet, Button  } from "@mui/joy";
+import { Box, Typography, Table, Select, Option, Sheet, Button , Modal, ModalDialog } from "@mui/joy";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { useState, useEffect } from "react";
@@ -46,10 +46,11 @@ function IdentityPage(){
                 sessionStorage.setItem('User-name', full_name);
             } else {
                 // Error occurred
+                console.error('Error fetching auth details:', response.statusText);
                 setShowError(true);
             }
         } catch (error) {
-            console.error("Error during initialLoad:", error);
+            console.error("Error during auth details:", error);
         }
     }
     initialLoad();  
@@ -75,6 +76,7 @@ function IdentityPage(){
                     setIdReqs(data);
                 } else {
                     console.error('Error fetching identity requests:', response.statusText);
+                    setShowError(true);
                 }
             } catch (error) {
                 console.error('Error during fetchIdentityRequests:', error);
@@ -133,10 +135,11 @@ function IdentityPage(){
                     const data = await response.json();
                     setArrayOfDivisions(data);
                 } else {
-                    console.error('Error fetching divisions:', response.statusText);
+                    console.error('Error fetching divisions in identity page:', response.statusText);
+                    setShowError(true);
                 }
             } catch (error) {
-                console.error('Error during divisions:', error);
+                console.error('Error during divisions in identity page:', error);
             }
         }
     
@@ -173,7 +176,44 @@ function IdentityPage(){
 
 
     return(
-        <Box>
+        <Box>    
+            {/*error modal*/}
+            <Modal open={showError}>
+                <ModalDialog
+                    aria-labelledby="nested-modal-title"
+                    aria-describedby="nested-modal-description"
+                    sx={(theme) => ({
+                    [theme.breakpoints.only('xs')]: {
+                        top: 'unset',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        borderRadius: 0,
+                        transform: 'none',
+                        maxWidth: 'unset',
+                    },
+                    })}
+                >
+                    <Typography id="nested-modal-title" level="h2">
+                        Oops, Internal server error!
+                    </Typography>
+                    <Typography id="nested-modal-description" textColor="text.tertiary">
+                        Looks like the internal server is having some issue. Please try again later.
+                    </Typography>
+                    <Box
+                    sx={{
+                        mt: 1,
+                        display: 'flex',
+                        gap: 1,
+                        flexDirection: { xs: 'column', sm: 'row-reverse' },
+                    }}
+                    >
+                    <Button variant="solid" color="main" onClick={() => window.location.reload()}>
+                        Refresh page
+                    </Button>
+                    </Box>
+                </ModalDialog>
+            </Modal>
             <SubHeader />
             <Box display="flex" justifyContent="space-between" alignItems="flex-end" sx={{ marginTop: "18px", marginBottom: "8px" }}>
                 <Typography level="h2">Identity Requests</Typography>

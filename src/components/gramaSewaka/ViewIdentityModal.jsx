@@ -164,7 +164,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                                                 <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                     <Box display="flex" flexDirection="column">
                                                         <Typography level="h4">Approved by - {details["approved_by"]}</Typography>
-                                                        <Typography level="body-sm">Approved date - {new Date().toLocaleDateString()}</Typography> 
+                                                        <Typography level="body-sm">Approved date - {new Date(details["approved_date"][0] * 1000).toLocaleDateString()}</Typography> 
                                                     </Box>
                                                 </Box>
                                             )
@@ -174,7 +174,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
                                                 <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                     <Box display="flex" flexDirection="column">
                                                         <Typography level="h4">Rejected by - {details["approved_by"]}</Typography>
-                                                        <Typography level="body-sm">Rejected date - {new Date().toLocaleDateString()}</Typography> 
+                                                        <Typography level="body-sm">Rejected date - {new Date(details["approved_date"][0] * 1000).toLocaleDateString()}</Typography> 
                                                     </Box>
                                                 </Box>
                                             )
