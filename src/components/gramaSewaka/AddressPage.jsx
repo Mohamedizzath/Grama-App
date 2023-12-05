@@ -166,10 +166,10 @@ function AddressPage(){
                 <Table stickyHeader>
                     <thead>
                         <tr>
-                            <th style={{ textAlign: 'center' }}><Typography level="h5" sx={{color:'#F26202'}}>Applied Date</Typography></th>
-                            <th style={{ textAlign: 'center' }}><Typography level="h5" sx={{color:'#F26202'}}>NIC</Typography></th>
-                            <th style={{ textAlign: 'center' }}><Typography level="h5" sx={{color:'#F26202'}}>Address</Typography></th>
-                            <th style={{ textAlign: 'center' }}><Typography level="h5" sx={{color:'#F26202'}}>Action</Typography></th>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>Applied Date</Typography></th>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>NIC</Typography></th>
+                            <th><Typography level="h5" sx={{color:'#F26202'}}>Address</Typography></th>
+                            <th style={{textAlign:'center'}}><Typography level="h5" sx={{color:'#F26202'}}>Action</Typography></th>
                         </tr>
                     </thead>
                     <tbody style={{ overflowY: 'auto', maxHeight: '300px' }}>
@@ -181,11 +181,11 @@ function AddressPage(){
                             </tr>
                         ) : (
                             viewReqs.map((req, index) => (
-                                <tr key={index} style={{ textAlign: 'center' }}>
+                                <tr key={index}>
                                     <td><Typography level="body-sm">{new Date(req["applied_date"][0] * 1000).toLocaleDateString()}</Typography></td>
                                     <td><Typography level="body-sm">{req.NIC}</Typography></td>
                                     <td><Typography level="body-sm">{req.address}</Typography></td>
-                                    <td>
+                                    <td style={{textAlign:'center'}}>
                                         <Button color="main" variant="outlined" sx={{ maxHeight: '3px', paddingX: '10px', fontSize:'10px' }} onClick={() => showDetailRequest(req)}>View Details</Button>
                                     </td>
                                 </tr>
