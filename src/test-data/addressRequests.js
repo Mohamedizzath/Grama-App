@@ -6,7 +6,9 @@ const addressRequests = [
         "grama-division": "Kollupitiya",
         "applied-date": "2023-11-27",
         "status": "PENDING",
-        "approved-by": null
+        "approved-by": null,
+        "identity-check-approved-by": "P. Chanaka Fernando",
+        "identity-check-approved-date": "2023-11-20"
     },
     {
         "requestId": 10002,
@@ -19,7 +21,9 @@ const addressRequests = [
             "id": 10010,
             "name": "P. Chanaka Fernando",
             "approved-date": "2023-11-20"
-        }
+        },
+        "identity-check-approved-by": "P. Chanaka Fernando",
+        "identity-check-approved-date": "2023-11-20"
     },
     {
         "requestId": 10003,
@@ -32,7 +36,9 @@ const addressRequests = [
             "id": 10009,
             "name": "T. Kasun Hewage",
             "approved-date": "2023-10-20"
-        }
+        }, 
+        "identity-check-approved-by": "P. Chanaka Fernando",
+        "identity-check-approved-date": "2023-11-20"
     },
     { 
         "requestId": 10004,
@@ -41,7 +47,9 @@ const addressRequests = [
         "grama-division": "Bambalapitiya",
         "applied-date": "2023-11-07",
         "status": "PENDING",
-        "approved-by": null
+        "approved-by": null,
+        "identity-check-approved-by": "P. Chanaka Fernando",
+        "identity-check-approved-date": "2023-11-20"
     },
 ];
 

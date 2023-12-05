@@ -18,13 +18,75 @@ function PolicePage(){
     // Managing view status of cards
     const [ viewStatus, setViewStatus ] = useState("ALL");
 
+    // Fetching id requests for the first time
+    useEffect(() => {
+        initialLoad();
+    }, []);
+
+    async function initialLoad(){
+        let response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`
+            }
+        });
+
+        if(response.ok){
+            const json = await response.json();
+            const NIC = json.nic;
+
+            sessionStorage.setItem('User-NIC', NIC);
+            // Setting post modal nic
+            setPostModalData({...postModalData, NIC: NIC});
+        } else {
+            // Error occured 
+            setShowError(true);
+        }
+
+        // Second function call to get grama divisions
+        response = await axios({ 
+            method: 'get',
+            url: 'http://localhost:9090/gramadivisions',
+            responseType: "json",
+        });
+
+        if(response.status === 200){
+            // Set up select options
+            const divisions = response.data;
+            setDivionSelect(divisions);
+        } else {
+            // Error occured 
+            setShowError(true);
+        }
+
+        // Second function call to get all the requests
+        response = await axios({
+            method: 'get',
+            url: `http://localhost:9090/address/requests/nic/${sessionStorage.getItem('User-NIC')}`,
+            responseType: "json",
+        });
+
+        if(response.status === 200){
+            setAddressReqs(response.data);
+            setViewAddressReqs(response.data);
+
+            setShowSkeletonCards(false);
+        } else {
+            // Error occured 
+            setShowError(true);
+        }
+    }
+
     /* Identity request create process
         Things needed - Reason,
                         Nic number, Grama division
     */
 
     // Managing the state for the modal
+    // Managing the state for the modal
     const [postModal, setPostModal] = useState(false);
+    const [postModalData, setPostModalData] = useState(postModalDefault);
+    const [addressDataError, setAddressDataError] = useState(null);
+    const [divionSelect, setDivionSelect] = useState(null);
 
     // Managing req cards
     useEffect(() => {
@@ -138,6 +200,12 @@ function PolicePage(){
             </Box>
         </Box>
     </>);
+}
+
+const postModalDefault = {
+    "NIC": "200107800876",
+    "address": "Your address",
+    "gramaDivision": ""
 }
 
 export default PolicePage;

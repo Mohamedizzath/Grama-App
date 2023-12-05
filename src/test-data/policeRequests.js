@@ -6,7 +6,16 @@ const policeRequests = [
         "grama-division": "Kollupitiya",
         "applied-date": "2023-11-27",
         "status": "PENDING",
-        "approved-date": null
+        "approved-date": null,
+        "identity-check": {
+            "approved-by": "Mr. Ruwan Perera",
+            "approved-date": "2023-11-27"
+        },
+        "address-check": {
+            "approved-by": "Ms. Chamodhi Gunawardane",
+            "approved-date": "2023-11-27"
+        }
+
     },
     {
         "requestId": 10002,
@@ -16,6 +25,14 @@ const policeRequests = [
         "applied-date": "2023-11-10",
         "status": "VERIFIED",
         "approved-date": "2023-11-17",
+        "identity-check": {
+            "approved-by": "Mr. R. Perera",
+            "approved-date": "2023-11-27"
+        },
+        "address-check": {
+            "approved-by": "Ms. Chamodhi Gunawardane",
+            "approved-date": "2023-11-27"
+        }
     },
     {
         "requestId": 10003,
@@ -24,7 +41,15 @@ const policeRequests = [
         "grama-division": "Kollupitiya",
         "applied-date": "2023-10-12",
         "status": "REJECTED",
-        "approved-date": "2023-10-19"
+        "approved-date": "2023-10-19",
+        "identity-check": {
+            "approved-by": "Mr. R. Perera",
+            "approved-date": "2023-11-27"
+        },
+        "address-check": {
+            "approved-by": "Ms. Chamodhi Gunawardane",
+            "approved-date": "2023-11-27"
+        }
     },
     { 
         "requestId": 10004,
@@ -33,7 +58,15 @@ const policeRequests = [
         "grama-division": "Bambalapitiya",
         "applied-date": "2023-11-07",
         "status": "PENDING",
-        "approved-date": "2023-11-14"
+        "approved-date": "2023-11-14",
+        "identity-check": {
+            "approved-by": "Mr. R. Perera",
+            "approved-date": "2023-11-27"
+        },
+        "address-check": {
+            "approved-by": "Ms. Chamodhi Gunawardane",
+            "approved-date": "2023-11-27"
+        }
     },
 ];
 
