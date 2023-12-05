@@ -19,6 +19,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router';
 import FaceIcon from '@mui/icons-material/Face';
 import OutputIcon from '@mui/icons-material/Output';
+import Profile from './Profile';
 
 function Header({ secured, role }){
     // Authentication logic
@@ -42,14 +43,13 @@ function Header({ secured, role }){
 
     async function handleAuthorization(secured, role){
         // Rendering page is secured page
-        if(state.isAuthenticated === true && secured === true){
+        if(state.isAuthenticated === true && secured === true && role){
             // Entered page is properly authenticated
             // Next step is to check the role
 
             const sessionRole = sessionStorage.getItem('User-Role');
 
             if(sessionRole === role){
-                console.log("DEBUG: Fetched from session!");
                 setUserRole(sessionRole);
             }
 
@@ -72,7 +72,7 @@ function Header({ secured, role }){
                         sessionStorage.setItem('User-Role', 'GRAMA-SEWAKA');
                     }
 
-                    setIsLoading(false);
+                    // setIsLoading(false);
                 } else if(response.status === 401) {
                     const errObj = {
                         title: "Oops, Unauthorized!",
@@ -102,6 +102,9 @@ function Header({ secured, role }){
                 setErrorObj(errObj);
                 setShowError(true); 
             }
+        } else if(state.isAuthenticated === true && secured === true && !role){
+            // For the profile page
+            return true;
         } else if(state.isAuthenticated === false && secured === true) {
             // Redirect to authentication process
             signIn();
@@ -134,6 +137,9 @@ function Header({ secured, role }){
             return true;
         }
     }
+
+    // Handling profile modal state
+    const [profileOpen, setProfileOpen] = useState(false);
 
     return (<>
         <Modal open={showError}>
@@ -179,6 +185,9 @@ function Header({ secured, role }){
             </Box>
         </ModalDialog>
         </Modal>
+
+        {/* Profile Component */}
+        <Profile open={profileOpen} setOpen={setProfileOpen} setErrorObj={setErrorObj} setShowError={setShowError} /> 
 
         {/* Header Component */}
         <Sheet
@@ -238,7 +247,7 @@ function Header({ secured, role }){
                         minWidth: 200,
                     }}
                     >
-                        <MenuItem>
+                        <MenuItem onClick={() => setProfileOpen(true)}>
                             <ListItemDecorator>
                             <FaceIcon />
                             </ListItemDecorator>
