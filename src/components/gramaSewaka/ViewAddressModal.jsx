@@ -83,7 +83,8 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
                     const data = await response.json();
                     setLatestIdentityRequest(data);
                 } else {
-                    console.error('Error fetching:', response.statusText);
+                    const errorData = await response.json(); // Attempt to parse error message
+                    console.error('Error fetching for latest identity check for AC:', errorData.message || response.statusText)
                 }
             } catch (error) {
                 console.error('Error during fetching request:', error);
