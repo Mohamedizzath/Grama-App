@@ -9,7 +9,7 @@ import CircleIcon from '@mui/icons-material/Circle';
         requestId, address, grama-division, applied-date, status, approved-by
 */
 
-function AddressCard({ index, details, showDetails }){
+function AddressCard({ index, details, showDetails, deleteReq }){
     const status = details["status"];
     let color = status === "Pending" ? "primary" : (status === "Verified" ? "success" : "danger" );
 
@@ -41,7 +41,7 @@ function AddressCard({ index, details, showDetails }){
             </Box>
             <Box display="flex" alignItems="center" justifyContent="center">
                 {
-                    status === "PENDING" && <Button color={color} variant="soft" size="sm" sx={{ marginRight: "4px" }} startDecorator={<ClearIcon />}>Delete</Button>
+                    status === "Pending" && <Button color={color} variant="soft" size="sm" sx={{ marginRight: "4px" }} startDecorator={<ClearIcon />} onClick={() => deleteReq(details["id"])}>Delete</Button>
                 }
                 <Button color={color} variant="solid" size="sm" endDecorator={<ArrowForwardIcon/>} onClick={() => showDetails(details)}>View Details</Button>
             </Box>

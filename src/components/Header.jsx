@@ -54,7 +54,7 @@ function Header({ secured, role }){
             }
 
             try {
-                const response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
+                const response = await fetch('https://api.asgardeo.io/t/interns/oauth2/userinfo', {
                     headers: {
                         Authorization: `Bearer ${await getAccessToken()}`
                     }
@@ -63,6 +63,8 @@ function Header({ secured, role }){
                 if (response.ok) {
                     const json = await response.json();
                     const fetchedRole = json.application_roles;
+
+                    console.log(json);
 
                     if(!fetchedRole){
                         setUserRole("CITIZEN");
@@ -233,7 +235,7 @@ function Header({ secured, role }){
                         }}
                         endDecorator={<KeyboardArrowDownIcon />}
                     >
-                     {state.username.length > 10 ? state.username.substring(0, 10) + " ..." : state.username}
+                     {state.displayName.length > 10 ? state.displayName.substring(0, 10) + " ..." : state.displayName}
                     </MenuButton>
                     <Menu
                     variant="plain"

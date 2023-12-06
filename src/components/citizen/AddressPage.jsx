@@ -24,7 +24,7 @@ function AddressPage(){
     }, []);
 
     async function initialLoad(){
-        let response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
+        let response = await fetch('https://api.asgardeo.io/t/interns/oauth2/userinfo', {
             headers: {
                 Authorization: `Bearer ${await getAccessToken()}`
             }
@@ -45,8 +45,11 @@ function AddressPage(){
         // Second function call to get grama divisions
         response = await axios({ 
             method: 'get',
-            url: 'http://localhost:9090/gramadivisions',
+            url: `${window.config.apiGatewayUrl}/gramadivisions`,
             responseType: "json",
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            }
         });
 
         if(response.status === 200){
@@ -61,8 +64,11 @@ function AddressPage(){
         // Second function call to get all the requests
         response = await axios({
             method: 'get',
-            url: `http://localhost:9090/address/requests/nic/${sessionStorage.getItem('User-NIC')}`,
+            url: `${window.config.apiGatewayUrl}/address/requests/nic/${sessionStorage.getItem('User-NIC')}`,
             responseType: "json",
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            }
         });
 
         if(response.status === 200){
@@ -119,8 +125,11 @@ function AddressPage(){
 
         const response = await axios({ 
             method: 'post',
-            url: 'http://localhost:9090/address/requests',
+            url: `${window.config.apiGatewayUrl}/address/requests`,
             data: reqBody,
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            }
         });
 
         if(response.status === 201){
@@ -177,6 +186,30 @@ function AddressPage(){
         setShowReq(true);
     }
 
+    // Delete identity request
+    async function deleteAddressReq(requestId){
+        const response = await axios({ 
+            method: 'delete',
+            url: `${window.config.apiGatewayUrl}/address/requests/${requestId}`,
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            },
+        });
+
+        if(response.status === 200){
+            setPostSnack(true);
+            setPostSnackObj({ color: "success", msg: "Address request successfully deleted"});
+        } else {
+            setPostSnack(true);
+            setPostSnackObj({ color: "danger", msg: "Error occured when deleting address request"});
+        }
+
+        setShowingDetail(null);
+        setShowReq(false);
+
+        initialLoad();
+    }
+
     return (<>
         <Box>
             {/* Address request create modal */}
@@ -231,7 +264,7 @@ function AddressPage(){
                 {postSnackObj.msg}
                 </Snackbar>
             {
-                showReq && <ViewAddressModal viewOpen={showReq} setViewOpen={setShowReq} details={showingDetail} />
+                showReq && <ViewAddressModal viewOpen={showReq} setViewOpen={setShowReq} details={showingDetail} deleteReq={deleteAddressReq} />
             }
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography level="h2">Hii! {state.displayName}</Typography>
@@ -260,7 +293,7 @@ function AddressPage(){
                     ))
                 }
                 {
-                    !showSkeletonCards && viewaddressReqs.length > 0 && viewaddressReqs.map((req, index) => <AddressCard index={index} details={req} showDetails={showDetailRequest}/>)
+                    !showSkeletonCards && viewaddressReqs.length > 0 && viewaddressReqs.map((req, index) => <AddressCard index={index} details={req} showDetails={showDetailRequest} deleteReq={deleteAddressReq}/>)
                 }
                 {/* Add empty reqs array placeholder */}
                 {

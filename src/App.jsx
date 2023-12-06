@@ -23,10 +23,10 @@ function App() {
 }
 
 const config = {
-  signInRedirectURL: "https://gdki-grama.choreoapps.dev/",
-  signOutRedirectURL: "https://gdki-grama.choreoapps.dev/",
-  clientID: "QbwCeuX54LB41vhsUqfutlR8gpUa",
-  baseUrl: "https://api.asgardeo.io/t/interns",
+  signInRedirectURL: window.config.auth.signInRedirectURL,
+  signOutRedirectURL: window.config.auth.signOutRedirectURL,
+  clientID: window.config.auth.clientID,
+  baseUrl: window.config.auth.baseUrl,
   scope: [ "openid","profile", "app_roles", "email","phone"],
   "storage": "sessionStorage"
 };

@@ -45,8 +45,11 @@ function IdentityPage(){
 
         const response = await axios({ 
             method: 'get',
-            url: 'http://localhost:9090/gramadivisions',
+            url: `${window.config.apiGatewayUrl}/gramadivisions`,
             responseType: "json",
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            }
         });
 
         if(response.status === 200){
@@ -63,7 +66,12 @@ function IdentityPage(){
         
     }
 
-    // Debugging postmodal data
+    // Debugging the grama divisions
+    useEffect(() => {
+        console.log('Division select!');
+        console.log(divionSelect);
+    }, [divionSelect]);
+
     useEffect(() => {
         const valid = checkPostModalData();
 
@@ -123,7 +131,10 @@ function IdentityPage(){
 
         const response = await axios({ 
             method: 'post',
-            url: 'http://localhost:9090/identity/requests',
+            url: `${window.config.apiGatewayUrl}/identity/requests`,
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            },
             data: reqBody,
         });
 
@@ -154,7 +165,7 @@ function IdentityPage(){
     }, []);
 
     async function initialLoad(){
-        let response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
+        let response = await fetch('https://api.asgardeo.io/t/interns/oauth2/userinfo', {
             headers: {
                 Authorization: `Bearer ${await getAccessToken()}`
             }
@@ -175,8 +186,11 @@ function IdentityPage(){
         // Second function call to get grama divisions
         response = await axios({ 
             method: 'get',
-            url: 'http://localhost:9090/gramadivisions',
+            url: `${window.config.apiGatewayUrl}/gramadivisions`,
             responseType: "json",
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            }
         });
 
         if(response.status === 200){
@@ -191,8 +205,11 @@ function IdentityPage(){
         // Second function call to get all the requests
         response = await axios({
             method: 'get',
-            url: `http://localhost:9090/identity/requests/nic/${sessionStorage.getItem('User-NIC')}`,
+            url: `${window.config.apiGatewayUrl}/identity/requests/nic/${sessionStorage.getItem('User-NIC')}`,
             responseType: "json",
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            },
         });
 
         if(response.status === 200){
@@ -245,7 +262,10 @@ function IdentityPage(){
     async function deleteIdentityReq(requestId){
         const response = await axios({ 
             method: 'delete',
-            url: `http://localhost:9090/identity/requests/${requestId}`,
+            url: `${window.config.apiGatewayUrl}/identity/requests/${requestId}`,
+            headers: {
+                Authorization: `Bearer ${await getAccessToken()}`,
+            },
         });
 
         if(response.status === 200){
