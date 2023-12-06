@@ -20,7 +20,7 @@ function Profile({ open, setOpen, setErrorObj, setShowError }){
 
     async function initialLoad(){
         try {
-            const response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
+            const response = await fetch('https://api.asgardeo.io/t/interns/oauth2/userinfo', {
                 headers: {
                     Authorization: `Bearer ${await getAccessToken()}`
                 }
