@@ -62,7 +62,8 @@ function Header({ secured, role }){
                 
                 if (response.ok) {
                     const json = await response.json();
-                    const fetchedRole = json.application_roles;
+                    const fetchedRole = json.Application_Role;
+                    // console.log(fetchedRole);
 
                     console.log(json);
 

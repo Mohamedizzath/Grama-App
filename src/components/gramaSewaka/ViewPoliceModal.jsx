@@ -34,7 +34,7 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
         const fetchLatestIdentityRequest = async () => {
             try {
                 const nic = details["nic"]; 
-                const response = await fetch(`http://localhost:9090/identity/requests/latest/${nic}`, {
+                const response = await fetch(`${window.config.apiGatewayUrl}/identity/requests/latest/${nic}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Authorization': `Bearer ${await getAccessToken()}`
@@ -62,7 +62,7 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
         const fetchLatestAddressRequest = async () => {
             try {
                 const nic = details["nic"];
-                const response = await fetch(`http://localhost:9090/address/requests/latest/${nic}`, {
+                const response = await fetch(`${window.config.apiGatewayUrl}/address/requests/latest/${nic}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Authorization': `Bearer ${await getAccessToken()}`
@@ -72,6 +72,7 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
                 if (response.ok) {
                     const data = await response.json();
                     setLatestAddressRequest(data);
+                    console.log('da', data);
                 } else {
                     const errorData = await response.json();
                     console.error('Error fetching for latest address check for PC:', errorData.message || response.statusText)
@@ -114,8 +115,8 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>NIC Number</FormLabel>
-                                    {/* <Input value={details["nic"]}/>  */}
-                                    <Input value={"200070903808"}/> 
+                                    <Input value={details["nic"]}/> 
+                                    {/* <Input value={"200070903808"}/>  */}
                                 </FormControl>
                             </Grid>
 

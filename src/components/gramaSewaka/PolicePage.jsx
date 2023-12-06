@@ -28,7 +28,7 @@ function PolicePage(){
                 const gdid = sessionStorage.getItem('User-DID');
                 const rlimit = 10000;
 
-                let url = `http://localhost:9090/police/requests?gid=${gdid}&rlimit=${rlimit}`;
+                let url = `${window.config.apiGatewayUrl}/police/requests?gid=${gdid}&rlimit=${rlimit}`;
                 const response = await fetch(url, {
                     headers: {
                         'Accept': 'application/json',
@@ -85,7 +85,7 @@ function PolicePage(){
     useEffect(() => {
         async function fetchRequest() {
             try {
-                const response = await fetch("http://localhost:9090/gramadivisions", {
+                const response = await fetch(`${window.config.apiGatewayUrl}/gramadivisions`, {
                     headers: {
                         'Accept': 'application/json',
                         'Authorization': `Bearer ${await getAccessToken()}`
