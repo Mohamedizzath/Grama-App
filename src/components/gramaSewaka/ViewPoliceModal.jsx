@@ -33,8 +33,7 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
     useEffect(() => {
         const fetchLatestIdentityRequest = async () => {
             try {
-                const nic = details["nic"];
-                // const nic = "200070903808"; //change this 
+                const nic = details["nic"]; 
                 const response = await fetch(`http://localhost:9090/identity/requests/latest/${nic}`, {
                     headers: {
                         'Accept': 'application/json',
@@ -63,8 +62,6 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
         const fetchLatestAddressRequest = async () => {
             try {
                 const nic = details["nic"];
-                console.log(nic);
-                // const nic = "200070903808";
                 const response = await fetch(`http://localhost:9090/address/requests/latest/${nic}`, {
                     headers: {
                         'Accept': 'application/json',
