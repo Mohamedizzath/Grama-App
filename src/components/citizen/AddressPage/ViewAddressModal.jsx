@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-function ViewAddressModal({ viewOpen, setViewOpen, details }){
+function ViewAddressModal({ viewOpen, setViewOpen, details, deleteReq }){
     let headerTheme = "primary";
     let chipIcon = null;
     let chipDisplay = "Pending";
@@ -64,10 +64,10 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
                                 </FormControl>
                             </Grid>
                             {
-                                details["status"] !== "PENDING" && (
+                                details["status"] !== "Pending" && (
                                     <Grid xs={12} md={12}>
                                         {
-                                            details["status"] === "VERIFIED" && (
+                                            details["status"] === "Verified" && (
                                                 <>
                                                     <Typography level="body-sm">Request status details</Typography>
                                                     <Box display="flex" justifyContent="space-between" alignItems="center">  
@@ -81,7 +81,7 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
                                             )
                                         }
                                         {
-                                            details["status"] === "REJECTED" && (
+                                            details["status"] === "Rejected" && (
                                                 <>
                                                     <Typography level="body-sm">Request status details</Typography>
                                                     <Box display="flex" justifyContent="space-between" alignItems="center">  
@@ -99,7 +99,7 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
                             }
                             <Grid md={12} display="flex" justifyContent="center" sx={{ marginTop: "12px"}}>
                                 {
-                                    details["status"] === "PENDING" && <Button color={headerTheme} variant="soft" startDecorator={<DeleteIcon/>}>Delete Request</Button>
+                                    details["status"] === "Pending" && <Button color={headerTheme} variant="soft" startDecorator={<DeleteIcon/>} onClick={() => deleteReq(details["id"])}>Delete Request</Button>
                                 }
                                 
                                 <Button color={headerTheme} variant="solid" startDecorator={<CloseIcon/>} sx={{ marginLeft: "8px" }} onClick={() => setViewOpen(false)}>Close</Button>

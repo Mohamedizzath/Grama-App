@@ -23,10 +23,10 @@ function App() {
 }
 
 const config = {
-  signInRedirectURL: "http://localhost:5173/",
-  signOutRedirectURL: "http://localhost:5173/",
-  clientID: "fzo2NWtoZMhrklIDf95yz9TjkqQa",
-  baseUrl: "https://api.asgardeo.io/t/wso2khadijah",
+  signInRedirectURL: window.config.auth.signInRedirectURL,
+  signOutRedirectURL: window.config.auth.signOutRedirectURL,
+  clientID: window.config.auth.clientID,
+  baseUrl: window.config.auth.baseUrl,
   scope: [ "openid","profile", "app_roles", "email","phone"],
   "storage": "sessionStorage"
 };
