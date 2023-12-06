@@ -28,6 +28,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details, deleteReq }){
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const date = new Date(details["applied_date"][0] * 1000).toLocaleDateString("en-US", options);
     const dobDate = new Date(details["DOB"][0] * 1000).toLocaleDateString("en-US", options);
+    const approvedDate = new Date(details["approved_date"][0] * 1000).toLocaleDateString("en-US", options);
 
     return <>
         <Modal open={viewOpen} onClose={() => setViewOpen(false)}>
@@ -106,10 +107,9 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details, deleteReq }){
                                             details["status"] === "Verified" && (
                                                 <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                     <Box display="flex" flexDirection="column">
-                                                        <Typography level="h4">Approved by - {details["approved-by"]["name"]}</Typography>
-                                                        <Typography level="body-sm">Approved date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                        <Typography level="h4">Approved by - {details["approved_by"]}</Typography>
+                                                        <Typography level="body-sm">Approved date - {approvedDate}</Typography> 
                                                         </Box>
-                                                    <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
                                                 </Box>
                                             )
                                         }
@@ -117,10 +117,9 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details, deleteReq }){
                                             details["status"] === "Rejected" && (
                                                 <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                     <Box display="flex" flexDirection="column">
-                                                        <Typography level="h4">Rejected by - {details["approved-by"]["name"]}</Typography>
-                                                        <Typography level="body-sm">Rejected date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                        <Typography level="h4">Rejected by - {details["approved_by"]}</Typography>
+                                                        <Typography level="body-sm">Rejected date - {approvedDate}</Typography> 
                                                     </Box>
-                                                    <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
                                                 </Box>
                                             )
                                         }
