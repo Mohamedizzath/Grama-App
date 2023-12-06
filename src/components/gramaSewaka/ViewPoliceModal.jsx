@@ -116,7 +116,6 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
                                 <FormControl>
                                     <FormLabel>NIC Number</FormLabel>
                                     <Input value={details["nic"]}/> 
-                                    {/* <Input value={"200070903808"}/>  */}
                                 </FormControl>
                             </Grid>
 
