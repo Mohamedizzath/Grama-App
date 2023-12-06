@@ -66,12 +66,6 @@ function IdentityPage(){
         
     }
 
-    // Debugging the grama divisions
-    useEffect(() => {
-        console.log('Division select!');
-        console.log(divionSelect);
-    }, [divionSelect]);
-
     useEffect(() => {
         const valid = checkPostModalData();
 

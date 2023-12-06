@@ -25,6 +25,11 @@ function ViewAddressModal({ viewOpen, setViewOpen, details, deleteReq }){
         chipDisplay = "Pending";
     }
 
+    // Formatting the date
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(details["applied_date"][0] * 1000).toLocaleDateString("en-US", options);
+    const approvedDate = new Date(details["approved_date"][0] * 1000).toLocaleDateString("en-US", options);
+
     return <>
         <Modal open={viewOpen} onClose={() => setViewOpen(false)}>
                 <ModalDialog sx={{ padding: "0px",overflowX: "hidden", overflowY: "auto" }}>
@@ -40,7 +45,7 @@ function ViewAddressModal({ viewOpen, setViewOpen, details, deleteReq }){
                         </Box>
                         
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Typography level="h2">Applied date: {details["applied-date"]}</Typography>
+                            <Typography level="h2">Applied date: {date}</Typography>
                             <Chip color={headerTheme} startDecorator={chipIcon} sx={{ paddingX: "16px", paddingY: "4px"}}>{chipDisplay}</Chip>
                         </Box>
                         
@@ -72,10 +77,9 @@ function ViewAddressModal({ viewOpen, setViewOpen, details, deleteReq }){
                                                     <Typography level="body-sm">Request status details</Typography>
                                                     <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                         <Box display="flex" flexDirection="column">
-                                                            <Typography level="h4">Approved by - {details["approved-by"]["name"]}</Typography>
-                                                            <Typography level="body-sm">Approved date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                            <Typography level="h4">Approved by - {details["approved_by"]}</Typography>
+                                                            <Typography level="body-sm">Approved date - {approvedDate}</Typography> 
                                                             </Box>
-                                                        <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
                                                     </Box>
                                                 </>
                                             )
@@ -86,10 +90,9 @@ function ViewAddressModal({ viewOpen, setViewOpen, details, deleteReq }){
                                                     <Typography level="body-sm">Request status details</Typography>
                                                     <Box display="flex" justifyContent="space-between" alignItems="center">  
                                                         <Box display="flex" flexDirection="column">
-                                                            <Typography level="h4">Rejected by - {details["approved-by"]["name"]}</Typography>
-                                                            <Typography level="body-sm">Rejected date - {details["approved-by"]["approved-date"]}</Typography> 
+                                                            <Typography level="h4">Rejected by - {details["approved_by"]}</Typography>
+                                                            <Typography level="body-sm">Rejected date - {approvedDate}</Typography> 
                                                         </Box>
-                                                        <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
                                                     </Box>
                                                 </>
                                             )
