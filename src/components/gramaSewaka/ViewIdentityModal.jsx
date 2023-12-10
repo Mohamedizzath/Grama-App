@@ -40,7 +40,7 @@ function ViewIdentityModal({ viewOpen, setViewOpen, details }) {
 
     const handleSave = async () => {
         try {
-            const response = await fetch('http://localhost:9090/identity/requests', {
+            const response = await fetch(`${window.config.apiGatewayUrl}/identity/requests`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',

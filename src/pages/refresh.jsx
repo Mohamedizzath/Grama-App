@@ -21,7 +21,7 @@ function RefreshScreen() {
 
         if (response.ok) {
           const json = await response.json();
-          const fetchedRole = json.application_roles;
+          const fetchedRole = json.Application_Role;
           console.log(fetchedRole);
 
           if (!fetchedRole) {

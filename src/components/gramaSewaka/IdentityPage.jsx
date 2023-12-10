@@ -11,7 +11,7 @@ function IdentityPage(){
 
     const [noRequests, setNoRequests] = useState(false); //for no tables in rows
 
-    const rowsPerPage = 4;
+    const rowsPerPage = 10;
     const { state, getAccessToken } = useAuthContext();
 
     const [idReqs, setIdReqs] = useState([]);  //to get all id requests
@@ -31,7 +31,7 @@ function IdentityPage(){
     //get the gs division id and set as session variable
     async function initialLoad() {
         try {
-            let response = await fetch('https://api.asgardeo.io/t/wso2khadijah/oauth2/userinfo', {
+            let response = await fetch('https://api.asgardeo.io/t/interns/oauth2/userinfo', {
                 headers: {
                     Authorization: `Bearer ${await getAccessToken()}`
                 }
@@ -39,8 +39,9 @@ function IdentityPage(){
     
             if (response.ok) {
                 const json = await response.json();
-                const GS_Division_ID = json.GS_Division_ID;
-                const full_name = json.name;
+                const GS_Division_ID = json.grama_division;
+                const full_name = json.preferred_username;
+                // console.log(full_name);
     
                 sessionStorage.setItem('User-DID', GS_Division_ID);
                 sessionStorage.setItem('User-name', full_name);
@@ -62,7 +63,7 @@ function IdentityPage(){
                 const gdid = sessionStorage.getItem('User-DID');
                 const rlimit = 10000;
 
-                let url = `http://localhost:9090/identity/requests?gdid=${gdid}&rlimit=${rlimit}`;
+                let url = `${window.config.apiGatewayUrl}/identity/requests?gdid=${gdid}&rlimit=${rlimit}`;
 
                 const response = await fetch(url, {
                     headers: {
@@ -124,7 +125,7 @@ function IdentityPage(){
     useEffect(() => {
         async function fetchRequest() {
             try {
-                const response = await fetch("http://localhost:9090/gramadivisions", {
+                const response = await fetch(`${window.config.apiGatewayUrl}/gramadivisions`, {
                     headers: {
                         'Accept': 'application/json',
                         'Authorization': `Bearer ${await getAccessToken()}`

@@ -36,11 +36,12 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
     // handle status change when saving modal
     const request_id = details["id"];
     const grama_name = sessionStorage.getItem('User-name');
+    // console.log(grama_name);
     const status = selectedStatus;
 
     const handleSave = async () => {
         try {
-            const response = await fetch('http://localhost:9090/address/requests', {
+            const response = await fetch(`${window.config.apiGatewayUrl}/address/requests`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
@@ -72,7 +73,7 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
         const fetchLatestRequest = async () => {
             try {
                 const nic = details["NIC"];
-                const response = await fetch(`http://localhost:9090/identity/requests/latest/${nic}`, {
+                const response = await fetch(`${window.config.apiGatewayUrl}/identity/requests/latest/${nic}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Authorization': `Bearer ${await getAccessToken()}`
@@ -82,8 +83,10 @@ function ViewAddressModal({ viewOpen, setViewOpen, details }){
                 if (response.ok) {
                     const data = await response.json();
                     setLatestIdentityRequest(data);
+                    //console.log(data);
                 } else {
-                    console.error('Error fetching:', response.statusText);
+                    const errorData = await response.json(); // Attempt to parse error message
+                    console.error('Error fetching for latest identity check for AC:', errorData.message || response.statusText)
                 }
             } catch (error) {
                 console.error('Error during fetching request:', error);

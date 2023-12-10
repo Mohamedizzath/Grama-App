@@ -66,8 +66,7 @@ function Header({ secured, role }){
                     setUserDetails(json); // Setting the userDetails
 
                     const fetchedRole = json.application_roles;
-                    console.log('Fetched role');
-                    console.log(json);
+
 
                     if(!fetchedRole){
                         setUserRole("CITIZEN");
