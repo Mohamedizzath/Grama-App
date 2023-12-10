@@ -25,6 +25,7 @@ function Header({ secured, role }){
     // Authentication logic
     const { state, signOut, signIn, getAccessToken } = useAuthContext();
     const [ userRole, setUserRole ] = useState(undefined);
+    const [ userDetails, setUserDetails] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // Handling Error messages
@@ -62,8 +63,10 @@ function Header({ secured, role }){
                 
                 if (response.ok) {
                     const json = await response.json();
-                    const fetchedRole = json.application_roles;
+                    setUserDetails(json); // Setting the userDetails
 
+                    const fetchedRole = json.application_roles;
+                    console.log('Fetched role');
                     console.log(json);
 
                     if(!fetchedRole){
@@ -189,7 +192,9 @@ function Header({ secured, role }){
         </Modal>
 
         {/* Profile Component */}
-        <Profile open={profileOpen} setOpen={setProfileOpen} setErrorObj={setErrorObj} setShowError={setShowError} /> 
+        {userDetails && (
+            <Profile open={profileOpen} setOpen={setProfileOpen} userDetails={userDetails} />
+        )} 
 
         {/* Header Component */}
         <Sheet

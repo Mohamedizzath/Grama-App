@@ -27,7 +27,7 @@ const config = {
   signOutRedirectURL: window.config.auth.signOutRedirectURL,
   clientID: window.config.auth.clientID,
   baseUrl: window.config.auth.baseUrl,
-  scope: [ "openid","profile", "app_roles", "email","phone"],
+  scope: [ "openid", "email", "profile"],
   "storage": "sessionStorage"
 };
 
