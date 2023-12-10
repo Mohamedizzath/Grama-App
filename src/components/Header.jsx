@@ -65,15 +65,22 @@ function Header({ secured, role }){
                     const json = await response.json();
                     setUserDetails(json); // Setting the userDetails
 
-                    const fetchedRole = json.application_roles;
-
+                    const fetchedRole = json.Application_Role;
 
                     if(!fetchedRole){
                         setUserRole("CITIZEN");
                         sessionStorage.setItem('User-Role', 'CITIZEN');
+
+                        if(role === "GRAMA-SEWAKA"){
+                            signOut();
+                        }
                     } else if(fetchedRole === "gramaSewaka") {
                         setUserRole("GRAMA-SEWAKA");
                         sessionStorage.setItem('User-Role', 'GRAMA-SEWAKA');
+
+                        if(role === "CITIZEN"){
+                            signOut();
+                        }
                     }
 
                     // setIsLoading(false);
