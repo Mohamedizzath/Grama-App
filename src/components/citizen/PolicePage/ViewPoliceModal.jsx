@@ -11,11 +11,11 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
     let chipIcon = null;
     let chipDisplay = "Pending";
 
-    if(details["status"] === "VERIFIED"){
+    if(details["status"] === "Verified"){
         headerTheme = "success";
         chipIcon = <CheckIcon/>
         chipDisplay = "Verified";
-    } else if(details["status"] === "REJECTED"){
+    } else if(details["status"] === "Rejected"){
         headerTheme = "danger";
         chipIcon = <CloseIcon />
         chipDisplay = "Rejected"
@@ -60,41 +60,10 @@ function ViewPoliceModal({ viewOpen, setViewOpen, details }){
                             <Grid xs={12} md={6}>
                                 <FormControl>
                                     <FormLabel>Grama divison</FormLabel>
-                                    <Input value={details["grama-division"]}/> 
+                                    <Input value={details["division"]["GN_division"] + "(" + details["division"]["DS_division"] + ")"}/> 
                                 </FormControl>
                             </Grid>
-                            {
-                                details["status"] !== "PENDING" && (
-                                    <Grid xs={12} md={12}>
-                                        <Typography level="body-sm">Request status details</Typography>
-                                        {
-                                            details["status"] === "VERIFIED" && (
-                                                <Box display="flex" justifyContent="space-between" alignItems="center">  
-                                                    <Box display="flex" flexDirection="column">
-                                                        <Typography level="h4">Approved date - {details["approved-date"]}</Typography>
-                                                        </Box>
-                                                    <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
-                                                </Box>
-                                            )
-                                        }
-                                        {
-                                            details["status"] === "REJECTED" && (
-                                                <Box display="flex" justifyContent="space-between" alignItems="center">  
-                                                    <Box display="flex" flexDirection="column">
-                                                        <Typography level="h4">Rejected date - {details["approved-date"]}</Typography>
-                                                    </Box>
-                                                    <Button color="neutral" variant="outlined" endDecorator={<ArrowForwardIcon />}>Contact via Slack</Button>
-                                                </Box>
-                                            )
-                                        }
-                                    </Grid>
-                                )
-                            }
                             <Grid md={12} display="flex" justifyContent="center" sx={{ marginTop: "12px"}}>
-                                {
-                                    details["status"] === "PENDING" && <Button color={headerTheme} variant="soft" startDecorator={<DeleteIcon/>}>Delete Request</Button>
-                                }
-                                
                                 <Button color={headerTheme} variant="solid" startDecorator={<CloseIcon/>} sx={{ marginLeft: "8px" }} onClick={() => setViewOpen(false)}>Close</Button>
                             </Grid>
                         </Grid>

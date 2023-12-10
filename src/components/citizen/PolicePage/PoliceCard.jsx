@@ -10,7 +10,11 @@ import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 
 function PoliceCard({ index, details, showDetails }){
     const status = details["status"];
-    let color = status === "PENDING" ? "primary" : (status === "VERIFIED" ? "success" : "danger" )
+    let color = status === "Pending" ? "primary" : (status === "Verified" ? "success" : "danger" );
+
+     // Formatting the date
+     const options = { year: 'numeric', month: 'long', day: 'numeric' };
+     const contDate = new Date(details["appliedTime"][0] * 1000).toLocaleDateString("en-US", options);
 
     return <>
         <Card variant="outlined" key={index} value={index} color={color} sx={{ 
@@ -27,7 +31,7 @@ function PoliceCard({ index, details, showDetails }){
                         Police Request
                     </Typography>
                 </Box>
-                <Typography level="h4">Applied date: {details["applied-date"]}</Typography>
+                <Typography level="h4">Applied date: {contDate}</Typography>
             </Box>
             <Box display="flex" justifyContent="flex-start" alignItems="center">
                 <Chip color={color} size="sm">Status - {details["status"]}</Chip>
