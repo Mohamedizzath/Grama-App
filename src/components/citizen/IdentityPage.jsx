@@ -10,12 +10,14 @@ import IdentityCard from "./IdentityPage/IdentityCard";
 import ViewIdentityModal from "./IdentityPage/ViewIdentityModal";
 import emptyRequestImg from "../../assets/empty-requests.svg";
 import axios from "axios";
+import ErrorHandler from "../ErrorHandler";
 
 function IdentityPage(){
     const { state, getAccessToken } = useAuthContext();
 
     // Handling errors occurs in the identity page
     const [showError, setShowError] = useState(false);
+    const [errorModal, setErrorModal] = useState(<ErrorHandler showError={showError} errorCode={null} />);
 
     /* Identity request create process
         Things needed - Full name(with initials)
@@ -61,6 +63,11 @@ function IdentityPage(){
             setPostModal(true);
         } else {
             // Error occured 
+            if(response.status === 401){
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
         
@@ -174,6 +181,11 @@ function IdentityPage(){
             setPostModalData({...postModalData, NIC: NIC});
         } else {
             // Error occured 
+            if(response.status === 401){
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
 
@@ -193,6 +205,11 @@ function IdentityPage(){
             setDivionSelect(divisions);
         } else {
             // Error occured 
+            if(response.status === 401){
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
 
@@ -213,6 +230,11 @@ function IdentityPage(){
             setShowSkeletonCards(false);
         } else {
             // Error occured 
+            if(response.status === 401){
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
     }
@@ -279,43 +301,7 @@ function IdentityPage(){
     return (<>
         <Box>
             {/* Error modal */}
-
-        <Modal open={showError}>
-            <ModalDialog
-                aria-labelledby="nested-modal-title"
-                aria-describedby="nested-modal-description"
-                sx={(theme) => ({
-                [theme.breakpoints.only('xs')]: {
-                    top: 'unset',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    borderRadius: 0,
-                    transform: 'none',
-                    maxWidth: 'unset',
-                },
-                })}
-            >
-                <Typography id="nested-modal-title" level="h2">
-                    Oops, Internal server error!
-                </Typography>
-                <Typography id="nested-modal-description" textColor="text.tertiary">
-                    Looks like internal server having some issue. Please try again later.
-                </Typography>
-                <Box
-                sx={{
-                    mt: 1,
-                    display: 'flex',
-                    gap: 1,
-                    flexDirection: { xs: 'column', sm: 'row-reverse' },
-                }}
-                >
-                <Button variant="solid" color="main" onClick={() => window.location.reload()}>
-                    Refresh page
-                </Button>
-                </Box>
-            </ModalDialog>
-            </Modal>
+            {errorModal}
 
             {/* Identity request create modal */}
             <Modal open={postModal} onClose={() => setPostModal(false)}>

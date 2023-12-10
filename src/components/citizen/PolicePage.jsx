@@ -8,6 +8,7 @@ import ViewPoliceModal from "./PolicePage/ViewPoliceModal";
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import axios from "axios";
+import ErrorHandler from "../ErrorHandler";
 
 function PolicePage(){
     const { state, getAccessToken } = useAuthContext();
@@ -28,6 +29,10 @@ function PolicePage(){
         initialLoad();
     }, []);
 
+    // Error handling
+    const [showError, setShowError] = useState(false);
+    const [errorModal, setErrorModal] = useState(<ErrorHandler showError={showError} errorCode={null} />);
+
     async function initialLoad(){
         let response = await fetch('https://api.asgardeo.io/t/interns/oauth2/userinfo', {
             headers: {
@@ -44,6 +49,11 @@ function PolicePage(){
             setPostModalData({...postModalData, nic: NIC});
         } else {
             // Error occured 
+            if(response.status === 401){
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
 
@@ -63,6 +73,11 @@ function PolicePage(){
             setDivionSelect(divisions);
         } else {
             // Error occured 
+            if(response.status === 401){
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
 
@@ -82,7 +97,12 @@ function PolicePage(){
 
             setShowSkeletonCards(false);
         } else {
-            // Error occured 
+           // Error occured 
+           if(response.status === 401){
+            setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
 
@@ -105,6 +125,11 @@ function PolicePage(){
             } 
         } else {
             // Error occured 
+            if(response.status === 401){
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
 
@@ -124,6 +149,11 @@ function PolicePage(){
             } 
         } else {
             // Error occured 
+            if(response.status === 401){
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            } else {
+                setErrorModal(<ErrorHandler showError={showError} errorCode={401} />);
+            }
             setShowError(true);
         }
 
@@ -231,6 +261,8 @@ function PolicePage(){
 
     return (<>
         {/* Identity request create modal */}
+        {/* Error modal */}
+        {errorModal}
             <Modal open={postModal} onClose={() => setPostModal(false)}>
                 <ModalDialog sx={{ padding: "0px", overflow: "hidden" }}>
                     <Box sx={{ height: "15px",
