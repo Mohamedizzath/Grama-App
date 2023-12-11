@@ -17,7 +17,7 @@ function Home() {
       <Grid container spacing={0} columns={16} style={{height:'calc(100vh - 68px)'}}>
         <Grid  xs={16} sm={16} md={8} lg={8}>
             <ReactPlayer ref={playerRef} url={videoFile} controls={false} playing={true}  
-            loop={true} muted={true}  style={{ minHeight: '100%', minWidth: '100%', 
+            loop={true} muted={true}  style={{ minHeight: '90%', width: 'auto', 
             transform: 'scaleX(1.22)',
             // '@media (max-width: 600px)': {
             //     transform: 'scaleX(1)', // xs screens
