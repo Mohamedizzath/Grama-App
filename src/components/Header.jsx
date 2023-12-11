@@ -65,7 +65,8 @@ function Header({ secured, role }){
                     const json = await response.json();
                     setUserDetails(json); // Setting the userDetails
 
-                    const fetchedRole = json.Application_Role;
+                    const fetchedRole = json.app_role_gdki;
+                    console.log(json);
 
                     if(!fetchedRole){
                         setUserRole("CITIZEN");

@@ -21,7 +21,7 @@ function RefreshScreen() {
 
         if (response.ok) {
           const json = await response.json();
-          const fetchedRole = json.Application_Role;
+          const fetchedRole = json.app_role_gdki;
 
           if (!fetchedRole) {
             navigate('/citizen');
