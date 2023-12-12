@@ -65,7 +65,8 @@ function Header({ secured, role }){
                     const json = await response.json();
                     setUserDetails(json); // Setting the userDetails
 
-                    const fetchedRole = json.Application_Role;
+                    const fetchedRole = json.app_role_gdki;
+                    console.log(json);
 
                     if(!fetchedRole){
                         setUserRole("CITIZEN");
@@ -97,7 +98,7 @@ function Header({ secured, role }){
                     const errObj = {
                         title: "Oops, Internal server error!",
                         body: "Looks like internal server having some issue. Please try again later.",
-                        mainBtn: { mainBtnText: "Go to Home", mainBtnAction: () => navigate("/") },
+                        mainBtn: { mainBtnText: "Go to Home", mainBtnAction: () => {signOut(); navigate("/"); }},
                         secondBtn: { secondBtnText: "Cancel", secondBtnAction: () => showError(false) }
                     }
                     setErrorObj(errObj);
@@ -107,7 +108,7 @@ function Header({ secured, role }){
                 const errObj = {
                     title: "Oops, Internal server error!",
                     body: "Looks like internal server having some issue. Please try again later.",
-                    mainBtn: { mainBtnText: "Go to Home", mainBtnAction: () => navigate("/") },
+                    mainBtn: { mainBtnText: "Go to Home", mainBtnAction: () =>  {signOut(); navigate("/"); }},
                     secondBtn: { secondBtnText: "Cancel", secondBtnAction: () => showError(false) }
                 }
                 setErrorObj(errObj);
